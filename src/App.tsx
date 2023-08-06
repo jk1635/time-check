@@ -281,7 +281,9 @@ const App: React.FC = () => {
                                             <input
                                                 type="text"
                                                 defaultValue={
-                                                    workTimes[i - 1].start
+                                                    workTimes[i - 1]
+                                                        ? workTimes[i - 1].start
+                                                        : ""
                                                 }
                                                 onChange={(event) =>
                                                     handleTimeChange(
@@ -307,7 +309,9 @@ const App: React.FC = () => {
                                             <input
                                                 type="text"
                                                 defaultValue={
-                                                    workTimes[i - 1].end
+                                                    workTimes[i - 1]
+                                                        ? workTimes[i - 1].start
+                                                        : ""
                                                 }
                                                 onChange={(event) =>
                                                     handleTimeChange(
