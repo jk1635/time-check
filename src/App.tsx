@@ -8,8 +8,9 @@ interface WorkTime {
 const App: React.FC = () => {
     const days = ["월", "화", "수", "목", "금"];
     const [workTimes, setWorkTimes] = useState<WorkTime[]>(
-        JSON.parse(localStorage.getItem("workTimes") || "[]") ||
-            Array.from({ length: 5 }, () => ({ start: "", end: "" }))
+        JSON.parse(localStorage.getItem("workTimes") || "[]").length
+            ? JSON.parse(localStorage.getItem("workTimes")!)
+            : Array.from({ length: 5 }, () => ({ start: "", end: "" }))
     );
     const [totalWorkTimes, setTotalWorkTimes] = useState<string[]>(
         JSON.parse(localStorage.getItem("totalWorkTimes") || "[]") ||
@@ -116,8 +117,8 @@ const App: React.FC = () => {
     const calculateRealWorkTime = (dayIndex: number) => {
         let totalWorkTime = totalWorkTimes[dayIndex];
         const restTime = calculateRestTime(
-            workTimes[dayIndex]?.start,
-            workTimes[dayIndex]?.end
+            workTimes[dayIndex]?.start || "0:00",
+            workTimes[dayIndex]?.end || "0:00"
         );
 
         if (halfDays[dayIndex]) {
