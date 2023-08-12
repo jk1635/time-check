@@ -114,15 +114,10 @@ const App: React.FC = () => {
     };
 
     const calculateRealWorkTime = (dayIndex: number) => {
-        const workTimeOfDay = workTimes[dayIndex];
-        if (!workTimeOfDay) {
-            return "00:00";
-        }
-
         let totalWorkTime = totalWorkTimes[dayIndex];
         const restTime = calculateRestTime(
-            workTimeOfDay.start,
-            workTimeOfDay.end
+            workTimes[dayIndex]?.start,
+            workTimes[dayIndex]?.end
         );
 
         if (halfDays[dayIndex]) {
