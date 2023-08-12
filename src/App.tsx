@@ -23,7 +23,10 @@ const App: React.FC = () => {
         JSON.parse(localStorage.getItem("fullDays") || "[]") ||
             Array.from({ length: 5 }, () => false)
     );
-
+    const [halfHour, setHalfHour] = useState<boolean[]>(
+        JSON.parse(localStorage.getItem("halfHour") || "[]") ||
+            Array.from({ length: 5 }, () => false)
+    );
     const handleHalfDayChange = (
         dayIndex: number,
         event: ChangeEvent<HTMLInputElement>
@@ -43,7 +46,15 @@ const App: React.FC = () => {
         setFullDays(newFullDays);
         localStorage.setItem("fullDays", JSON.stringify(newFullDays));
     };
-
+    const handleHalfHourChange = (
+        dayIndex: number,
+        event: ChangeEvent<HTMLInputElement>
+    ) => {
+        const newHalfHour = [...halfHour];
+        newHalfHour[dayIndex] = event.target.checked;
+        setHalfHour(newHalfHour);
+        localStorage.setItem("halfHour", JSON.stringify(newHalfHour));
+    };
     const handleTimeChange = (
         dayIndex: number,
         type: keyof WorkTime,
@@ -117,6 +128,10 @@ const App: React.FC = () => {
             totalWorkTime = addTime(totalWorkTime, "08:00");
         }
 
+        if (halfHour[dayIndex]) {
+            totalWorkTime = addTime(totalWorkTime, "00:30");
+        }
+
         const totalWorkTimeMins = convertToMinutes(totalWorkTime);
         const restTimeMins = convertToMinutes(restTime);
 
@@ -177,14 +192,15 @@ const App: React.FC = () => {
                 .toString()
                 .padStart(2, "0")}`
         );
-    }, [totalWorkTimes, halfDays, fullDays, workTimes]);
+    }, [totalWorkTimes, halfDays, fullDays, halfHour, workTimes]);
 
     useEffect(() => {
         localStorage.setItem("workTimes", JSON.stringify(workTimes));
         localStorage.setItem("totalWorkTimes", JSON.stringify(totalWorkTimes));
         localStorage.setItem("halfDays", JSON.stringify(halfDays));
         localStorage.setItem("fullDays", JSON.stringify(fullDays));
-    }, [workTimes, totalWorkTimes, halfDays, fullDays]);
+        localStorage.setItem("halfHour", JSON.stringify(halfHour));
+    }, [workTimes, totalWorkTimes, halfDays, fullDays, halfHour]);
 
     const handleClearAllInputs = () => {
         const initialWorkTimes = Array.from({ length: 5 }, () => ({
@@ -194,11 +210,13 @@ const App: React.FC = () => {
         const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");
         const initialHalfDays = Array.from({ length: 5 }, () => false);
         const initialFullDays = Array.from({ length: 5 }, () => false);
+        const initialHalfHour = Array.from({ length: 5 }, () => false);
 
         setWorkTimes(initialWorkTimes);
         setTotalWorkTimes(initialTotalWorkTimes);
         setHalfDays(initialHalfDays);
         setFullDays(initialFullDays);
+        setHalfHour(initialHalfHour);
         setRemainingWorkTime("40:00");
 
         localStorage.setItem("workTimes", JSON.stringify(initialWorkTimes));
@@ -208,6 +226,7 @@ const App: React.FC = () => {
         );
         localStorage.setItem("halfDays", JSON.stringify(initialHalfDays));
         localStorage.setItem("fullDays", JSON.stringify(initialFullDays));
+        localStorage.setItem("halfHour", JSON.stringify(initialHalfHour));
         window.location.reload();
     };
 
@@ -224,18 +243,26 @@ const App: React.FC = () => {
             if (fullDays[index]) {
                 dayData += " (연차)";
             }
+            if (halfHour[index]) {
+                dayData += " (조정)";
+            }
             return {
                 ...acc,
                 [day]: dayData,
             };
         }, {});
-        data["잔여 근무 시간"] = remainingWorkTime;
+
+        data["잔여 근무 시간"] =
+            convertToMinutes(remainingWorkTime) < 0
+                ? "근무시간초과"
+                : remainingWorkTime;
+
         return JSON.stringify(data, null, 2);
     };
 
     const handleSave = () => {
         const data: any = createWorkTimeData();
-        setSavedData((prevData) => [...prevData, data]);
+        setSavedData((prevData) => [data, ...prevData]);
     };
 
     useEffect(() => {
@@ -265,7 +292,7 @@ const App: React.FC = () => {
                     <tbody>
                         {Array.from({ length: 6 }, (_, i) => (
                             <tr key={i}>
-                                {Array.from({ length: 9 }, (_, j) => (
+                                {Array.from({ length: 10 }, (_, j) => (
                                     <td
                                         style={{
                                             border: "1px solid gray",
@@ -310,7 +337,7 @@ const App: React.FC = () => {
                                                 type="text"
                                                 defaultValue={
                                                     workTimes[i - 1]
-                                                        ? workTimes[i - 1].start
+                                                        ? workTimes[i - 1].end
                                                         : ""
                                                 }
                                                 onChange={(event) =>
@@ -380,7 +407,7 @@ const App: React.FC = () => {
                                                   workTimes[i - 1].start,
                                                   workTimes[i - 1].end
                                               )
-                                            : null}
+                                            : null}{" "}
                                         {j === 7 && i === 0
                                             ? "전체 근무 시간"
                                             : null}
@@ -397,6 +424,26 @@ const App: React.FC = () => {
                                                 ? "근무시간초과"
                                                 : remainingWorkTime
                                             : null}
+                                        {j === 9 && i === 0
+                                            ? "30분 조정"
+                                            : null}
+                                        {j === 9 && i > 0 ? (
+                                            <input
+                                                type="checkbox"
+                                                name={`halfHour-${i}`}
+                                                id={`halfHour-${i}`}
+                                                checked={halfHour[i - 1]}
+                                                onChange={(event) =>
+                                                    handleHalfHourChange(
+                                                        i - 1,
+                                                        event
+                                                    )
+                                                }
+                                                style={{
+                                                    transform: "scale(1.5)",
+                                                }}
+                                            />
+                                        ) : null}
                                     </td>
                                 ))}
                             </tr>
