@@ -159,12 +159,16 @@ const App: React.FC = () => {
             .toString()
             .padStart(2, "0")}`;
     };
+
     const convertToMinutes = (time: string) => {
+        if (!time) return 0;
         const [hours, mins] = time.split(":").map(Number);
         return hours * 60 + mins;
     };
 
     const calculateTotalMinutes = (start: string, end: string) => {
+        if (!start || !end) return 0;
+
         const [startHour, startMin] = start.split(":").map(Number);
         const [endHour, endMin] = end.split(":").map(Number);
 
