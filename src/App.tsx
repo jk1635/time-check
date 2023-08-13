@@ -1,4 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
+import "./App.css";
+import Popup from "./Popup";
 
 interface WorkTime {
     start: string;
@@ -7,6 +9,7 @@ interface WorkTime {
 
 const App: React.FC = () => {
     const days = ["월", "화", "수", "목", "금"];
+
     const [workTimes, setWorkTimes] = useState<WorkTime[]>(
         JSON.parse(localStorage.getItem("workTimes") || "[]").length
             ? JSON.parse(localStorage.getItem("workTimes")!)
@@ -28,6 +31,43 @@ const App: React.FC = () => {
         JSON.parse(localStorage.getItem("halfHour") || "[]") ||
             Array.from({ length: 5 }, () => false)
     );
+
+    const [remainingWorkTime, setRemainingWorkTime] = useState<string>("40:00");
+    const [savedData, setSavedData] = useState<Array<string>>(
+        JSON.parse(localStorage.getItem("savedData") || "[]")
+    );
+
+    useEffect(() => {
+        let totalRealWorkTimeMins = 0;
+
+        for (let i = 0; i < 5; i++) {
+            totalRealWorkTimeMins += convertToMinutes(calculateRealWorkTime(i));
+        }
+
+        const remainingWorkTimeMins =
+            convertToMinutes("40:00") - totalRealWorkTimeMins;
+        const hours = Math.floor(remainingWorkTimeMins / 60);
+        const mins = remainingWorkTimeMins % 60;
+
+        setRemainingWorkTime(
+            `${hours.toString().padStart(2, "0")}:${mins
+                .toString()
+                .padStart(2, "0")}`
+        );
+    }, [totalWorkTimes, halfDays, fullDays, halfHour, workTimes]);
+
+    useEffect(() => {
+        localStorage.setItem("workTimes", JSON.stringify(workTimes));
+        localStorage.setItem("totalWorkTimes", JSON.stringify(totalWorkTimes));
+        localStorage.setItem("halfDays", JSON.stringify(halfDays));
+        localStorage.setItem("fullDays", JSON.stringify(fullDays));
+        localStorage.setItem("halfHour", JSON.stringify(halfHour));
+    }, [workTimes, totalWorkTimes, halfDays, fullDays, halfHour]);
+
+    useEffect(() => {
+        localStorage.setItem("savedData", JSON.stringify(savedData));
+    }, [savedData]);
+
     const handleHalfDayChange = (
         dayIndex: number,
         event: ChangeEvent<HTMLInputElement>
@@ -47,6 +87,7 @@ const App: React.FC = () => {
         setFullDays(newFullDays);
         localStorage.setItem("fullDays", JSON.stringify(newFullDays));
     };
+
     const handleHalfHourChange = (
         dayIndex: number,
         event: ChangeEvent<HTMLInputElement>
@@ -56,6 +97,7 @@ const App: React.FC = () => {
         setHalfHour(newHalfHour);
         localStorage.setItem("halfHour", JSON.stringify(newHalfHour));
     };
+
     const handleTimeChange = (
         dayIndex: number,
         type: keyof WorkTime,
@@ -84,9 +126,46 @@ const App: React.FC = () => {
             setTotalWorkTimes(newTotalWorkTimes);
         } else {
             const newTotalWorkTimes = [...totalWorkTimes];
-            newTotalWorkTimes[dayIndex] = "0:00";
+            newTotalWorkTimes[dayIndex] = "00:00";
             setTotalWorkTimes(newTotalWorkTimes);
         }
+    };
+
+    const handleClearAllInputs = () => {
+        const initialWorkTimes = Array.from({ length: 5 }, () => ({
+            start: "",
+            end: "",
+        }));
+        const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");
+        const initialHalfDays = Array.from({ length: 5 }, () => false);
+        const initialFullDays = Array.from({ length: 5 }, () => false);
+        const initialHalfHour = Array.from({ length: 5 }, () => false);
+
+        setWorkTimes(initialWorkTimes);
+        setTotalWorkTimes(initialTotalWorkTimes);
+        setHalfDays(initialHalfDays);
+        setFullDays(initialFullDays);
+        setHalfHour(initialHalfHour);
+        setRemainingWorkTime("40:00");
+
+        localStorage.setItem("workTimes", JSON.stringify(initialWorkTimes));
+        localStorage.setItem(
+            "totalWorkTimes",
+            JSON.stringify(initialTotalWorkTimes)
+        );
+        localStorage.setItem("halfDays", JSON.stringify(initialHalfDays));
+        localStorage.setItem("fullDays", JSON.stringify(initialFullDays));
+        localStorage.setItem("halfHour", JSON.stringify(initialHalfHour));
+        window.location.reload();
+    };
+
+    const handleSave = () => {
+        const data: any = createWorkTimeData();
+        setSavedData((prevData) => [data, ...prevData]);
+    };
+
+    const handleDelete = (index: number) => {
+        setSavedData((prevData) => prevData.filter((_, i) => i !== index));
     };
 
     const calculateRestTime = (start: string, end: string) => {
@@ -178,67 +257,6 @@ const App: React.FC = () => {
         return endMinutes - startMinutes;
     };
 
-    const [remainingWorkTime, setRemainingWorkTime] = useState<string>("40:00");
-
-    useEffect(() => {
-        let totalRealWorkTimeMins = 0;
-
-        for (let i = 0; i < 5; i++) {
-            totalRealWorkTimeMins += convertToMinutes(calculateRealWorkTime(i));
-        }
-
-        const remainingWorkTimeMins =
-            convertToMinutes("40:00") - totalRealWorkTimeMins;
-        const hours = Math.floor(remainingWorkTimeMins / 60);
-        const mins = remainingWorkTimeMins % 60;
-
-        setRemainingWorkTime(
-            `${hours.toString().padStart(2, "0")}:${mins
-                .toString()
-                .padStart(2, "0")}`
-        );
-    }, [totalWorkTimes, halfDays, fullDays, halfHour, workTimes]);
-
-    useEffect(() => {
-        localStorage.setItem("workTimes", JSON.stringify(workTimes));
-        localStorage.setItem("totalWorkTimes", JSON.stringify(totalWorkTimes));
-        localStorage.setItem("halfDays", JSON.stringify(halfDays));
-        localStorage.setItem("fullDays", JSON.stringify(fullDays));
-        localStorage.setItem("halfHour", JSON.stringify(halfHour));
-    }, [workTimes, totalWorkTimes, halfDays, fullDays, halfHour]);
-
-    const handleClearAllInputs = () => {
-        const initialWorkTimes = Array.from({ length: 5 }, () => ({
-            start: "",
-            end: "",
-        }));
-        const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");
-        const initialHalfDays = Array.from({ length: 5 }, () => false);
-        const initialFullDays = Array.from({ length: 5 }, () => false);
-        const initialHalfHour = Array.from({ length: 5 }, () => false);
-
-        setWorkTimes(initialWorkTimes);
-        setTotalWorkTimes(initialTotalWorkTimes);
-        setHalfDays(initialHalfDays);
-        setFullDays(initialFullDays);
-        setHalfHour(initialHalfHour);
-        setRemainingWorkTime("40:00");
-
-        localStorage.setItem("workTimes", JSON.stringify(initialWorkTimes));
-        localStorage.setItem(
-            "totalWorkTimes",
-            JSON.stringify(initialTotalWorkTimes)
-        );
-        localStorage.setItem("halfDays", JSON.stringify(initialHalfDays));
-        localStorage.setItem("fullDays", JSON.stringify(initialFullDays));
-        localStorage.setItem("halfHour", JSON.stringify(initialHalfHour));
-        window.location.reload();
-    };
-
-    const [savedData, setSavedData] = useState<Array<string>>(
-        JSON.parse(localStorage.getItem("savedData") || "[]")
-    );
-
     const createWorkTimeData = () => {
         const data: any = days.reduce((acc, day, index) => {
             let dayData = `${calculateRealWorkTime(index)}`;
@@ -265,188 +283,133 @@ const App: React.FC = () => {
         return JSON.stringify(data, null, 2);
     };
 
-    const handleSave = () => {
-        const data: any = createWorkTimeData();
-        setSavedData((prevData) => [data, ...prevData]);
-    };
-
-    useEffect(() => {
-        localStorage.setItem("savedData", JSON.stringify(savedData));
-    }, [savedData]);
-
-    const handleDelete = (index: number) => {
-        setSavedData((prevData) => prevData.filter((_, i) => i !== index));
-    };
-
     return (
-        <div>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    width: "60rem",
-                }}
-            >
-                <table
-                    style={{
-                        border: "1px solid gray",
-                        borderCollapse: "collapse",
-                    }}
-                >
+        <div className="container">
+            <Popup />
+            <div className="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            {Array.from({ length: 10 }, (_, j) => (
+                                <th key={j}>
+                                    {j === 0 ? "요일" : null}
+                                    {j === 1 ? "출근 시간" : null}
+                                    {j === 2 ? "퇴근 시간" : null}
+                                    {j === 3 ? "반차" : null}
+                                    {j === 4 ? "연차" : null}
+                                    {j === 5 ? "실 근무 시간" : null}
+                                    {j === 6 ? "휴게 시간" : null}
+                                    {j === 7 ? "전체 근무 시간" : null}
+                                    {j === 8 ? "잔여 근무 시간" : null}
+                                    {j === 9 ? "+30분" : null}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
                     <tbody>
-                        {Array.from({ length: 6 }, (_, i) => (
+                        {Array.from({ length: 5 }, (_, i) => (
                             <tr key={i}>
                                 {Array.from({ length: 10 }, (_, j) => (
-                                    <td
-                                        style={{
-                                            border: "1px solid gray",
-                                            padding: "15px",
-                                        }}
-                                        key={j}
-                                    >
-                                        {j === 0 && i > 0 ? days[i - 1] : null}
-                                        {j === 1 && i === 0
-                                            ? "출근 시간"
-                                            : null}
-                                        {j === 1 && i > 0 && (
+                                    <td key={j}>
+                                        {j === 0 ? days[i] : null}
+                                        {j === 1 && (
                                             <input
                                                 type="text"
+                                                className="text-input"
+                                                placeholder="출근시간"
                                                 defaultValue={
-                                                    workTimes[i - 1]
-                                                        ? workTimes[i - 1].start
+                                                    workTimes[i]
+                                                        ? workTimes[i].start
                                                         : ""
                                                 }
                                                 onChange={(event) =>
                                                     handleTimeChange(
-                                                        i - 1,
+                                                        i,
                                                         "start",
                                                         event
                                                     )
                                                 }
-                                                style={{
-                                                    border: "none",
-                                                    width: "8rem",
-                                                    height: "100%",
-                                                    boxSizing: "border-box",
-                                                    fontSize: "24px",
-                                                    outline: "none",
-                                                }}
                                             />
                                         )}
-                                        {j === 2 && i === 0
-                                            ? "퇴근 시간"
-                                            : null}
-                                        {j === 2 && i > 0 && (
+                                        {j === 2 && (
                                             <input
                                                 type="text"
+                                                className="text-input"
+                                                placeholder="퇴근시간"
                                                 defaultValue={
-                                                    workTimes[i - 1]
-                                                        ? workTimes[i - 1].end
+                                                    workTimes[i]
+                                                        ? workTimes[i].end
                                                         : ""
                                                 }
                                                 onChange={(event) =>
                                                     handleTimeChange(
-                                                        i - 1,
+                                                        i,
                                                         "end",
                                                         event
                                                     )
                                                 }
-                                                style={{
-                                                    border: "none",
-                                                    width: "8rem",
-                                                    height: "100%",
-                                                    boxSizing: "border-box",
-                                                    fontSize: "24px",
-                                                    outline: "none",
-                                                }}
                                             />
                                         )}
-                                        {j === 3 && i === 0 ? "반차" : null}
-                                        {j === 3 && i > 0 ? (
+                                        {j === 3 ? (
                                             <input
                                                 type="checkbox"
+                                                className="checkbox-input"
                                                 name={`halfDay-${i}`}
                                                 id={`halfDay-${i}`}
-                                                checked={halfDays[i - 1]}
+                                                checked={halfDays[i]}
                                                 onChange={(event) =>
                                                     handleHalfDayChange(
-                                                        i - 1,
+                                                        i,
                                                         event
                                                     )
                                                 }
-                                                style={{
-                                                    transform: "scale(1.5)",
-                                                }}
                                             />
                                         ) : null}
-                                        {j === 4 && i === 0 ? "연차" : null}
-                                        {j === 4 && i > 0 ? (
+                                        {j === 4 ? (
                                             <input
                                                 type="checkbox"
+                                                className="checkbox-input"
                                                 name={`fullDay-${i}`}
                                                 id={`fullDay-${i}`}
-                                                checked={fullDays[i - 1]}
+                                                checked={fullDays[i]}
                                                 onChange={(event) =>
                                                     handleFullDayChange(
-                                                        i - 1,
+                                                        i,
                                                         event
                                                     )
                                                 }
-                                                style={{
-                                                    transform: "scale(1.5)",
-                                                }}
                                             />
                                         ) : null}
-                                        {j === 5 && i === 0
-                                            ? "실 근무 시간"
+                                        {j === 5
+                                            ? calculateRealWorkTime(i)
                                             : null}
-                                        {j === 5 && i > 0
-                                            ? calculateRealWorkTime(i - 1)
-                                            : null}
-                                        {j === 6 && i === 0
-                                            ? "휴게 시간"
-                                            : null}
-                                        {j === 6 && i > 0
+                                        {j === 6
                                             ? calculateRestTime(
-                                                  workTimes[i - 1].start,
-                                                  workTimes[i - 1].end
+                                                  workTimes[i].start,
+                                                  workTimes[i].end
                                               )
-                                            : null}{" "}
-                                        {j === 7 && i === 0
-                                            ? "전체 근무 시간"
                                             : null}
-                                        {j === 7 && i > 0
-                                            ? totalWorkTimes[i - 1]
-                                            : null}
+                                        {j === 7 ? totalWorkTimes[i] : null}
                                         {j === 8 && i === 0
-                                            ? "잔여 근무 시간"
-                                            : null}
-                                        {j === 8 && i === 1
                                             ? convertToMinutes(
                                                   remainingWorkTime
                                               ) < 0
                                                 ? "근무시간초과"
                                                 : remainingWorkTime
                                             : null}
-                                        {j === 9 && i === 0
-                                            ? "30분 조정"
-                                            : null}
-                                        {j === 9 && i > 0 ? (
+                                        {j === 9 ? (
                                             <input
                                                 type="checkbox"
+                                                className="checkbox-input"
                                                 name={`halfHour-${i}`}
                                                 id={`halfHour-${i}`}
-                                                checked={halfHour[i - 1]}
+                                                checked={halfHour[i]}
                                                 onChange={(event) =>
                                                     handleHalfHourChange(
-                                                        i - 1,
+                                                        i,
                                                         event
                                                     )
                                                 }
-                                                style={{
-                                                    transform: "scale(1.5)",
-                                                }}
                                             />
                                         ) : null}
                                     </td>
@@ -455,22 +418,27 @@ const App: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <div className="button-wrapper">
                     <button
-                        style={{ padding: "10px" }}
+                        className="outline-button"
                         onClick={handleClearAllInputs}
                     >
-                        내용 지우기
+                        초기화
                     </button>
-                    <button style={{ padding: "10px" }} onClick={handleSave}>
+                    <button className="default-button" onClick={handleSave}>
                         저장
                     </button>
                 </div>
             </div>
             {savedData.map((data, index) => (
-                <div key={index}>
+                <div className="data-wrapper" key={index}>
                     <pre>{data}</pre>
-                    <button onClick={() => handleDelete(index)}>Delete</button>
+                    <button
+                        className="outline-button"
+                        onClick={() => handleDelete(index)}
+                    >
+                        삭제
+                    </button>
                 </div>
             ))}
         </div>
