@@ -45,8 +45,9 @@ const Popup = () => {
             <div className="modal-overlay"></div>
             <div className="popup-wrapper">
                 <span>
-                    안녕하세요. 베일리입니다. <br /> 버그를 발견하시면
-                    개인적으로 연락 부탁드립니다.
+                    안녕하세요. 베일리입니다.
+                    <br />
+                    버그를 발견하시면 개인적으로 연락 부탁드립니다.
                     <br />
                 </span>
                 <div className="close-comment">
