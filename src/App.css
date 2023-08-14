@@ -18,8 +18,7 @@
 
 .table-wrapper {
     overflow-x: scroll;
-    margin-top: 1px;
-    margin-bottom: 24px;
+    margin-top: 2px;
     min-width: 300px;
 }
 
@@ -91,7 +90,8 @@ td .checkbox-input {
 .button-wrapper {
     display: flex;
     justify-content: flex-end;
-    padding-top: 24px;
+    margin-top: 24px;
+    margin-bottom: 24px;
     gap: 5px;
 }
 

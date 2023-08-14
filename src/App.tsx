@@ -428,17 +428,17 @@ const App: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-                <div className="button-wrapper">
-                    <button
-                        className="outline-button"
-                        onClick={handleClearAllInputs}
-                    >
-                        초기화
-                    </button>
-                    <button className="default-button" onClick={handleSave}>
-                        저장
-                    </button>
-                </div>
+            </div>
+            <div className="button-wrapper">
+                <button
+                    className="outline-button"
+                    onClick={handleClearAllInputs}
+                >
+                    초기화
+                </button>
+                <button className="default-button" onClick={handleSave}>
+                    저장
+                </button>
             </div>
             {savedData.map((data, index) => (
                 <div className="data-wrapper" key={index}>
