@@ -4,6 +4,7 @@ import "./Popup.css";
 const Popup = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [neverShowAgain, setNeverShowAgain] = useState(false);
+    const [scrollPosition, setScrollPosition] = useState<number>(0);
 
     useEffect(() => {
         const hide = localStorage.getItem("hidePopup");
@@ -11,6 +12,18 @@ const Popup = () => {
             setShowPopup(true);
         }
     }, []);
+
+    useEffect(() => {
+        if (showPopup) {
+            setScrollPosition(window.scrollY);
+            window.scrollTo(0, 0);
+            document.body.style.overflow = "hidden";
+        } else {
+            window.scrollTo(0, scrollPosition);
+
+            document.body.style.overflow = "auto";
+        }
+    }, [showPopup]);
 
     const handleClose = () => {
         if (neverShowAgain) {
