@@ -286,6 +286,16 @@ const App: React.FC = () => {
     return (
         <div className="container">
             <Popup />
+            <div className="info">
+                <a
+                    href={`sample.png`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <span className="material-symbols-outlined">info</span>
+                </a>
+            </div>
+
             <div className="table-wrapper">
                 <table>
                     <thead>
