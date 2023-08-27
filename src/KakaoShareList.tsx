@@ -8,7 +8,11 @@ declare global {
 
 const appKey = process.env.REACT_APP_KAKAO_SHARE_KEY;
 
-const KakaoShareList = ({ title = "", description = "", imageUrl = "" }) => {
+const KakaoShareList = ({
+    title = "스케줄",
+    description = "",
+    imageUrl = "",
+}) => {
     useEffect(() => {
         if (window.Kakao && !window.Kakao.isInitialized()) {
             window.Kakao.init(appKey);
@@ -29,7 +33,7 @@ const KakaoShareList = ({ title = "", description = "", imageUrl = "" }) => {
                     imageUrl: imageUrl,
                     link: {
                         webUrl: imageUrl,
-                        mobileUrl: imageUrl,
+                        mobileWebUrl: imageUrl,
                     },
                 },
             });
