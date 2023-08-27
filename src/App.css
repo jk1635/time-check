@@ -116,6 +116,12 @@ button {
     background-color: transparent;
 }
 
+.kakao-button {
+    border: none;
+    color: #000000;
+    background-color: #fee500;
+}
+
 .data-wrapper {
     display: flex;
     justify-content: space-between;
@@ -123,9 +129,10 @@ button {
     padding: 12px;
     width: 300px;
     border: 1px solid rgb(234, 238, 244);
+    border-radius: 5px;
 }
 
 .description-wrapper {
     width: 100%;
-    background-color: rgb(246, 250, 253);
+    background-color: rgb(234, 238, 244);
 }

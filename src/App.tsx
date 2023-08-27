@@ -1,10 +1,16 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "./App.css";
 import Popup from "./Popup";
+import HtmlToCanvas, { DayData } from "./HtmlToCanvas";
 
 interface WorkTime {
     start: string;
     end: string;
+}
+declare global {
+    interface Window {
+        Kakao: any;
+    }
 }
 
 const App: React.FC = () => {
@@ -178,6 +184,41 @@ const App: React.FC = () => {
 
     const handleDelete = (index: number) => {
         setSavedData((prevData) => prevData.filter((_, i) => i !== index));
+    };
+
+    const [mergedWorkData, setMergedWorkData] = useState<DayData[]>([]);
+    const [capturedImageURL, setCapturedImageURL] = useState<string>();
+    const [showKakaoShareList, setShowKakaoShareList] = useState(false);
+
+    const handleCapture = (url: string) => {
+        setCapturedImageURL(url);
+    };
+
+    const handleWorkTime = async () => {
+        const data: any = workTimes;
+        const data2: any = JSON.parse(createWorkTimeData());
+
+        const daysOrder = ["월", "화", "수", "목", "금", "잔여 근무 시간"];
+        const mergedData: DayData[] = [];
+
+        daysOrder.forEach((day, index) => {
+            if (day !== "잔여 근무 시간") {
+                mergedData.push({
+                    day: day,
+                    start: data[index]?.start || "",
+                    end: data[index]?.end || "",
+                    total: data2[day] || "00:00",
+                });
+            } else {
+                mergedData.push({
+                    day: "잔여 근무 시간",
+                    total: data2["잔여 근무 시간"],
+                });
+            }
+        });
+
+        setMergedWorkData(mergedData);
+        setShowKakaoShareList(!showKakaoShareList); // 공유 컴포넌트 열기 또는 닫기
     };
 
     const calculateRestTime = (start: string, end: string) => {
@@ -442,6 +483,9 @@ const App: React.FC = () => {
                 </table>
             </div>
             <div className="button-wrapper">
+                <button className="outline-button" onClick={handleWorkTime}>
+                    {showKakaoShareList ? "닫기" : "공유"}
+                </button>
                 <button
                     className="outline-button"
                     onClick={handleClearAllInputs}
@@ -452,6 +496,26 @@ const App: React.FC = () => {
                     저장
                 </button>
             </div>
+            {showKakaoShareList && (
+                <div
+                    style={{
+                        position: "relative",
+                    }}
+                >
+                    <div
+                        style={{
+                            position: "absolute",
+                            right: "0%",
+                        }}
+                    >
+                        <HtmlToCanvas
+                            savedData={mergedWorkData}
+                            onCapture={handleCapture}
+                            capturedImageURL={capturedImageURL}
+                        />
+                    </div>
+                </div>
+            )}
             {savedData.map((data, index) => (
                 <div className="data-wrapper" key={index}>
                     <pre>{data}</pre>
