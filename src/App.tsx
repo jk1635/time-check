@@ -27,10 +27,10 @@ const App: React.FC = () => {
         JSON.parse(localStorage.getItem("fullDays") || "[]") ||
             Array.from({ length: 5 }, () => false)
     );
-    const [halfHour, setHalfHour] = useState<boolean[]>(
-        JSON.parse(localStorage.getItem("halfHour") || "[]") ||
-            Array.from({ length: 5 }, () => false)
-    );
+    // const [halfHour, setHalfHour] = useState<boolean[]>(
+    //     JSON.parse(localStorage.getItem("halfHour") || "[]") ||
+    //         Array.from({ length: 5 }, () => false)
+    // );
 
     const [remainingWorkTime, setRemainingWorkTime] = useState<string>("40:00");
     const [savedData, setSavedData] = useState<Array<string>>(
@@ -54,15 +54,27 @@ const App: React.FC = () => {
                 .toString()
                 .padStart(2, "0")}`
         );
-    }, [totalWorkTimes, halfDays, fullDays, halfHour, workTimes]);
+    }, [
+        totalWorkTimes,
+        halfDays,
+        fullDays,
+        // halfHour,
+        workTimes,
+    ]);
 
     useEffect(() => {
         localStorage.setItem("workTimes", JSON.stringify(workTimes));
         localStorage.setItem("totalWorkTimes", JSON.stringify(totalWorkTimes));
         localStorage.setItem("halfDays", JSON.stringify(halfDays));
         localStorage.setItem("fullDays", JSON.stringify(fullDays));
-        localStorage.setItem("halfHour", JSON.stringify(halfHour));
-    }, [workTimes, totalWorkTimes, halfDays, fullDays, halfHour]);
+        // localStorage.setItem("halfHour", JSON.stringify(halfHour));
+    }, [
+        workTimes,
+        totalWorkTimes,
+        halfDays,
+        fullDays,
+        //  halfHour
+    ]);
 
     useEffect(() => {
         localStorage.setItem("savedData", JSON.stringify(savedData));
@@ -88,15 +100,15 @@ const App: React.FC = () => {
         localStorage.setItem("fullDays", JSON.stringify(newFullDays));
     };
 
-    const handleHalfHourChange = (
-        dayIndex: number,
-        event: ChangeEvent<HTMLInputElement>
-    ) => {
-        const newHalfHour = [...halfHour];
-        newHalfHour[dayIndex] = event.target.checked;
-        setHalfHour(newHalfHour);
-        localStorage.setItem("halfHour", JSON.stringify(newHalfHour));
-    };
+    // const handleHalfHourChange = (
+    //     dayIndex: number,
+    //     event: ChangeEvent<HTMLInputElement>
+    // ) => {
+    //     const newHalfHour = [...halfHour];
+    //     newHalfHour[dayIndex] = event.target.checked;
+    //     setHalfHour(newHalfHour);
+    //     localStorage.setItem("halfHour", JSON.stringify(newHalfHour));
+    // };
 
     const handleTimeChange = (
         dayIndex: number,
@@ -139,13 +151,13 @@ const App: React.FC = () => {
         const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");
         const initialHalfDays = Array.from({ length: 5 }, () => false);
         const initialFullDays = Array.from({ length: 5 }, () => false);
-        const initialHalfHour = Array.from({ length: 5 }, () => false);
+        // const initialHalfHour = Array.from({ length: 5 }, () => false);
 
         setWorkTimes(initialWorkTimes);
         setTotalWorkTimes(initialTotalWorkTimes);
         setHalfDays(initialHalfDays);
         setFullDays(initialFullDays);
-        setHalfHour(initialHalfHour);
+        // setHalfHour(initialHalfHour);
         setRemainingWorkTime("40:00");
 
         localStorage.setItem("workTimes", JSON.stringify(initialWorkTimes));
@@ -155,7 +167,7 @@ const App: React.FC = () => {
         );
         localStorage.setItem("halfDays", JSON.stringify(initialHalfDays));
         localStorage.setItem("fullDays", JSON.stringify(initialFullDays));
-        localStorage.setItem("halfHour", JSON.stringify(initialHalfHour));
+        // localStorage.setItem("halfHour", JSON.stringify(initialHalfHour));
         window.location.reload();
     };
 
@@ -171,9 +183,9 @@ const App: React.FC = () => {
     const calculateRestTime = (start: string, end: string) => {
         const totalMins = calculateTotalMinutes(start, end);
 
-        if (totalMins >= 720) {
+        if (totalMins >= 780) {
             return "1:30";
-        } else if (totalMins >= 480) {
+        } else if (totalMins >= 510) {
             return "1:00";
         } else if (totalMins >= 240) {
             return "0:30";
@@ -208,9 +220,9 @@ const App: React.FC = () => {
             totalWorkTime = addTime(totalWorkTime, "08:00");
         }
 
-        if (halfHour[dayIndex]) {
-            totalWorkTime = addTime(totalWorkTime, "00:30");
-        }
+        // if (halfHour[dayIndex]) {
+        //     totalWorkTime = addTime(totalWorkTime, "00:30");
+        // }
 
         const totalWorkTimeMins = convertToMinutes(totalWorkTime);
         const restTimeMins = convertToMinutes(restTime);
@@ -266,9 +278,9 @@ const App: React.FC = () => {
             if (fullDays[index]) {
                 dayData += " (연차)";
             }
-            if (halfHour[index]) {
-                dayData += " (조정)";
-            }
+            // if (halfHour[index]) {
+            //     dayData += " (조정)";
+            // }
             return {
                 ...acc,
                 [day]: dayData,
@@ -311,7 +323,7 @@ const App: React.FC = () => {
                                     {j === 6 ? "휴게 시간" : null}
                                     {j === 7 ? "전체 근무 시간" : null}
                                     {j === 8 ? "잔여 근무 시간" : null}
-                                    {j === 9 ? "+30분" : null}
+                                    {/* {j === 9 ? "+30분" : null} */}
                                 </th>
                             ))}
                         </tr>
@@ -407,7 +419,7 @@ const App: React.FC = () => {
                                                 ? "근무시간초과"
                                                 : remainingWorkTime
                                             : null}
-                                        {j === 9 ? (
+                                        {/* {j === 9 ? (
                                             <input
                                                 type="checkbox"
                                                 className="checkbox-input"
@@ -421,7 +433,7 @@ const App: React.FC = () => {
                                                     )
                                                 }
                                             />
-                                        ) : null}
+                                        ) : null} */}
                                     </td>
                                 ))}
                             </tr>
