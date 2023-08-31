@@ -106,14 +106,12 @@ button {
 }
 
 .default-button {
-    border: none;
     color: #ffffff;
     background-color: rgb(10, 44, 76);
 }
 
 .outline-button {
-    border: none;
-    outline: 1px solid rgb(215, 228, 230);
+    border: 1px solid rgb(215, 228, 230);
     background-color: transparent;
 }
 
