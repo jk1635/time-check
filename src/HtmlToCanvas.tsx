@@ -58,15 +58,7 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
     };
 
     return (
-        <div
-            style={{
-                border: "1px solid rgb(234, 238, 244)",
-                padding: "12px",
-                borderRadius: "5px",
-                zIndex: "10",
-                backgroundColor: "#ffffff",
-            }}
-        >
+        <div className="html-table">
             {savedData.length > 0 && (
                 <table ref={tableRef}>
                     <thead>
@@ -89,14 +81,7 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
                     </tbody>
                 </table>
             )}
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "5px",
-                    marginTop: "12px",
-                }}
-            >
+            <div className="capture-button-wrapper">
                 {loading ? (
                     <button className="outline-button" onClick={captureTable}>
                         생성하는 중

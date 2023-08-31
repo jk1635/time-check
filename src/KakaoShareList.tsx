@@ -8,11 +8,7 @@ declare global {
 
 const appKey = process.env.REACT_APP_KAKAO_SHARE_KEY;
 
-const KakaoShareList = ({
-    title = "스케줄",
-    description = "",
-    imageUrl = "",
-}) => {
+const KakaoShareList = ({ title = "", description = "", imageUrl = "" }) => {
     useEffect(() => {
         if (window.Kakao && !window.Kakao.isInitialized()) {
             window.Kakao.init(appKey);
@@ -42,19 +38,17 @@ const KakaoShareList = ({
 
     return (
         <div>
-            {/* <button */}
-            {/*    className="kakao-button" */}
-            {/*    style={{ */}
-            {/*        display: "flex", */}
-            {/*        justifyContent: "space-between", */}
-            {/*        alignItems: "center", */}
-            {/*    }} */}
-            {/*    onClick={() => share(title, description, imageUrl)} */}
-            {/* > */}
-            {/*    <img alt="" src="/kakao.png" width="15px" /> */}
-            {/*    <span style={{ paddingLeft: "5px" }}>카카오 공유</span> */}
-            {/* </button> */}
-            <button className="default-button" onClick={() => share(title, description, imageUrl)}>
+            {/* <button
+                className="kakao-button"
+                onClick={() => share(title, description, imageUrl)}
+            >
+                <img alt="" src="/kakao.png" width="15px" />
+                <span style={{ paddingLeft: "5px" }}>카카오 공유</span>
+            </button> */}
+            <button
+                className="default-button"
+                onClick={() => share(title, description, imageUrl)}
+            >
                 2. 카카오 공유
             </button>
         </div>

@@ -105,7 +105,7 @@ button {
     cursor: pointer;
 }
 
-.default-button {  
+.default-button {
     border: none;
     color: #ffffff;
     background-color: rgb(10, 44, 76);
@@ -117,6 +117,9 @@ button {
 }
 
 .kakao-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border: none;
     color: #000000;
     background-color: #fee500;
@@ -135,4 +138,19 @@ button {
 .description-wrapper {
     width: 100%;
     background-color: rgb(234, 238, 244);
+}
+
+.html-table {
+    border: 1px solid rgb(234, 238, 244);
+    padding: 12px;
+    border-radius: 5px;
+    z-index: 10;
+    background-color: #ffffff;
+}
+
+.capture-button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-top: 12px;
 }
