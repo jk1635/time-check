@@ -105,7 +105,8 @@ button {
     cursor: pointer;
 }
 
-.default-button {
+.default-button {  
+    border: none;
     color: #ffffff;
     background-color: rgb(10, 44, 76);
 }
