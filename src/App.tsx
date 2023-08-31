@@ -7,6 +7,7 @@ interface WorkTime {
     start: string;
     end: string;
 }
+
 declare global {
     interface Window {
         Kakao: any;
@@ -33,10 +34,6 @@ const App: React.FC = () => {
         JSON.parse(localStorage.getItem("fullDays") || "[]") ||
             Array.from({ length: 5 }, () => false)
     );
-    // const [halfHour, setHalfHour] = useState<boolean[]>(
-    //     JSON.parse(localStorage.getItem("halfHour") || "[]") ||
-    //         Array.from({ length: 5 }, () => false)
-    // );
 
     const [remainingWorkTime, setRemainingWorkTime] = useState<string>("40:00");
     const [savedData, setSavedData] = useState<Array<string>>(
@@ -60,27 +57,14 @@ const App: React.FC = () => {
                 .toString()
                 .padStart(2, "0")}`
         );
-    }, [
-        totalWorkTimes,
-        halfDays,
-        fullDays,
-        // halfHour,
-        workTimes,
-    ]);
+    }, [totalWorkTimes, halfDays, fullDays, workTimes]);
 
     useEffect(() => {
         localStorage.setItem("workTimes", JSON.stringify(workTimes));
         localStorage.setItem("totalWorkTimes", JSON.stringify(totalWorkTimes));
         localStorage.setItem("halfDays", JSON.stringify(halfDays));
         localStorage.setItem("fullDays", JSON.stringify(fullDays));
-        // localStorage.setItem("halfHour", JSON.stringify(halfHour));
-    }, [
-        workTimes,
-        totalWorkTimes,
-        halfDays,
-        fullDays,
-        //  halfHour
-    ]);
+    }, [workTimes, totalWorkTimes, halfDays, fullDays]);
 
     useEffect(() => {
         localStorage.setItem("savedData", JSON.stringify(savedData));
@@ -105,16 +89,6 @@ const App: React.FC = () => {
         setFullDays(newFullDays);
         localStorage.setItem("fullDays", JSON.stringify(newFullDays));
     };
-
-    // const handleHalfHourChange = (
-    //     dayIndex: number,
-    //     event: ChangeEvent<HTMLInputElement>
-    // ) => {
-    //     const newHalfHour = [...halfHour];
-    //     newHalfHour[dayIndex] = event.target.checked;
-    //     setHalfHour(newHalfHour);
-    //     localStorage.setItem("halfHour", JSON.stringify(newHalfHour));
-    // };
 
     const handleTimeChange = (
         dayIndex: number,
@@ -157,13 +131,11 @@ const App: React.FC = () => {
         const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");
         const initialHalfDays = Array.from({ length: 5 }, () => false);
         const initialFullDays = Array.from({ length: 5 }, () => false);
-        // const initialHalfHour = Array.from({ length: 5 }, () => false);
 
         setWorkTimes(initialWorkTimes);
         setTotalWorkTimes(initialTotalWorkTimes);
         setHalfDays(initialHalfDays);
         setFullDays(initialFullDays);
-        // setHalfHour(initialHalfHour);
         setRemainingWorkTime("40:00");
 
         localStorage.setItem("workTimes", JSON.stringify(initialWorkTimes));
@@ -173,7 +145,6 @@ const App: React.FC = () => {
         );
         localStorage.setItem("halfDays", JSON.stringify(initialHalfDays));
         localStorage.setItem("fullDays", JSON.stringify(initialFullDays));
-        // localStorage.setItem("halfHour", JSON.stringify(initialHalfHour));
         window.location.reload();
     };
 
@@ -218,7 +189,7 @@ const App: React.FC = () => {
         });
 
         setMergedWorkData(mergedData);
-        setShowKakaoShareList(!showKakaoShareList); // 공유 컴포넌트 열기 또는 닫기
+        setShowKakaoShareList(!showKakaoShareList);
     };
 
     const calculateRestTime = (start: string, end: string) => {
@@ -260,10 +231,6 @@ const App: React.FC = () => {
         if (fullDays[dayIndex]) {
             totalWorkTime = addTime(totalWorkTime, "08:00");
         }
-
-        // if (halfHour[dayIndex]) {
-        //     totalWorkTime = addTime(totalWorkTime, "00:30");
-        // }
 
         const totalWorkTimeMins = convertToMinutes(totalWorkTime);
         const restTimeMins = convertToMinutes(restTime);
@@ -319,9 +286,6 @@ const App: React.FC = () => {
             if (fullDays[index]) {
                 dayData += " (연차)";
             }
-            // if (halfHour[index]) {
-            //     dayData += " (조정)";
-            // }
             return {
                 ...acc,
                 [day]: dayData,
@@ -364,7 +328,6 @@ const App: React.FC = () => {
                                     {j === 6 ? "휴게 시간" : null}
                                     {j === 7 ? "전체 근무 시간" : null}
                                     {j === 8 ? "잔여 근무 시간" : null}
-                                    {/* {j === 9 ? "+30분" : null} */}
                                 </th>
                             ))}
                         </tr>
@@ -460,21 +423,6 @@ const App: React.FC = () => {
                                                 ? "근무시간초과"
                                                 : remainingWorkTime
                                             : null}
-                                        {/* {j === 9 ? (
-                                            <input
-                                                type="checkbox"
-                                                className="checkbox-input"
-                                                name={`halfHour-${i}`}
-                                                id={`halfHour-${i}`}
-                                                checked={halfHour[i]}
-                                                onChange={(event) =>
-                                                    handleHalfHourChange(
-                                                        i,
-                                                        event
-                                                    )
-                                                }
-                                            />
-                                        ) : null} */}
                                     </td>
                                 ))}
                             </tr>

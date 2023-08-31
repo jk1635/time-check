@@ -8,8 +8,8 @@
 }
 
 .info a .material-symbols-outlined {
-    font-size: 20px;
     color: rgb(10, 44, 76);
+    font-size: 20px;
 }
 
 .info a:hover .material-symbols-outlined {
@@ -17,19 +17,19 @@
 }
 
 .table-wrapper {
-    overflow-x: scroll;
     margin-top: 2px;
     min-width: 300px;
+    overflow-x: scroll;
 }
 
 table {
     width: 100%;
-    font-size: 12px;
-    font-weight: 400;
-    color: rgb(55, 81, 106);
     border-top: 1px solid rgb(234, 238, 244);
     border-bottom: 1px solid rgb(234, 238, 244);
     border-collapse: collapse;
+    color: rgb(55, 81, 106);
+    font-size: 12px;
+    font-weight: 400;
 }
 
 thead {
@@ -43,8 +43,8 @@ tr {
 th {
     display: table-cell;
     padding: 0px 8px;
-    vertical-align: middle;
     text-align: left;
+    vertical-align: middle;
     white-space: nowrap;
 }
 
@@ -65,16 +65,16 @@ td {
     padding: 0px 8px;
     height: 52px;
     border-top: 1px solid rgb(234, 238, 244);
-    vertical-align: middle;
     text-align: left;
+    vertical-align: middle;
     white-space: nowrap;
 }
 
 td .text-input {
     border: none;
     outline: none;
-    font-weight: bold;
     background-color: transparent;
+    font-weight: bold;
 }
 
 td .text-input::placeholder {
@@ -116,14 +116,14 @@ button {
     background-color: transparent;
 }
 
-.kakao-button {
+/* .kakao-button {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border: none;
     color: #000000;
     background-color: #fee500;
-}
+} */
 
 .data-wrapper {
     display: flex;
@@ -141,16 +141,16 @@ button {
 }
 
 .html-table {
-    border: 1px solid rgb(234, 238, 244);
     padding: 12px;
+    border: 1px solid rgb(234, 238, 244);
     border-radius: 5px;
-    z-index: 10;
     background-color: #ffffff;
+    z-index: 10;
 }
 
 .capture-button-wrapper {
     display: flex;
     justify-content: flex-end;
-    gap: 5px;
     margin-top: 12px;
+    gap: 5px;
 }

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
-import KakaoShareList from "./KakaoShareList";
+import KakaoShare from "./KakaoShare";
 
 export interface DayData {
     day: string;
@@ -21,11 +21,30 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
     capturedImageURL,
 }) => {
     const tableRef = useRef(null);
-    const [imageURL, setImageURL] = useState<string>();
     const [loading, setLoading] = useState(false);
 
+    const uploadCloud = async (blob: Blob): Promise<string> => {
+        const formData = new FormData();
+        formData.append("file", blob);
+        formData.append(
+            "upload_preset",
+            `${process.env.REACT_APP_CLOUD_PRESETS}`
+        );
+
+        const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
+            {
+                method: "POST",
+                body: formData,
+            }
+        );
+
+        const data = await response.json();
+        return data.secure_url;
+    };
+
     const captureTable = async () => {
-        setLoading(true); // 로딩 시작
+        setLoading(true);
 
         if (tableRef.current) {
             const canvas = await html2canvas(tableRef.current);
@@ -33,28 +52,24 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
                 canvas.toBlob(resolve)
             );
 
-            if (!blob) return;
-
-            const formData = new FormData();
-            formData.append("file", blob);
-            formData.append(
-                "upload_preset",
-                `${process.env.REACT_APP_CLOUD_PRESETS}`
-            );
-
-            const response = await fetch(
-                `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
-
-            const data = await response.json();
-            setImageURL(data.secure_url);
-            onCapture(data.secure_url);
+            if (blob) {
+                const uploadedURL = await uploadCloud(blob);
+                onCapture(uploadedURL);
+            }
         }
+
         setLoading(false);
+    };
+
+    const renderTableRows = () => {
+        return savedData.map((data) => (
+            <tr key={data.day}>
+                <td>{data.day}</td>
+                <td>{data.start || "-"}</td>
+                <td>{data.end || "-"}</td>
+                <td>{data.total}</td>
+            </tr>
+        ));
     };
 
     return (
@@ -69,29 +84,14 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
                             <th>실 근무 시간</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {savedData.map((data, index) => (
-                            <tr key={index}>
-                                <td>{data.day}</td>
-                                <td>{data.start || "-"}</td>
-                                <td>{data.end || "-"}</td>
-                                <td>{data.total}</td>
-                            </tr>
-                        ))}
-                    </tbody>
+                    <tbody>{renderTableRows()}</tbody>
                 </table>
             )}
             <div className="capture-button-wrapper">
-                {loading ? (
-                    <button className="outline-button" onClick={captureTable}>
-                        생성하는 중
-                    </button>
-                ) : (
-                    <button className="outline-button" onClick={captureTable}>
-                        1. 이미지 생성
-                    </button>
-                )}
-                <KakaoShareList imageUrl={capturedImageURL} />
+                <button className="outline-button" onClick={captureTable}>
+                    {loading ? "생성하는 중" : "1. 이미지 생성"}
+                </button>
+                <KakaoShare imageUrl={capturedImageURL} />
             </div>
         </div>
     );
