@@ -42,18 +42,18 @@ const KakaoShareList = ({
 
     return (
         <div>
-            <button
-                className="kakao-button"
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-                onClick={() => share(title, description, imageUrl)}
-            >
-                <img alt="" src="/kakao.png" width="15px" />
-                <span style={{ paddingLeft: "5px" }}>카카오 공유</span>
-            </button>
+                    {/* <button */}
+                {/*    className="kakao-button" */}
+                {/*    style={{ */}
+                {/*        display: "flex", */}
+                {/*        justifyContent: "space-between", */}
+                {/*        alignItems: "center", */}
+                {/*    }} */}
+                {/*    onClick={() => share(title, description, imageUrl)} */}
+                {/* > */}
+                {/*    <img alt="" src="/kakao.png" width="15px" /> */}
+                {/*    <span style={{ paddingLeft: "5px" }}>카카오 공유</span> */}
+                {/* </button> */}
         </div>
     );
 };
