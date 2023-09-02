@@ -33,7 +33,7 @@ const Popup = () => {
     };
 
     const handleCheckboxChange = () => {
-        setNeverShowAgain((prevState) => !prevState);
+        setNeverShowAgain(prevState => !prevState);
     };
 
     if (!showPopup) {
@@ -42,7 +42,7 @@ const Popup = () => {
 
     return (
         <>
-            <div className="modal-overlay"></div>
+            <div className="modal-overlay" />
             <div className="popup-wrapper">
                 <span>
                     안녕하세요. 베일리입니다.
@@ -59,19 +59,13 @@ const Popup = () => {
                             checked={neverShowAgain}
                             onChange={handleCheckboxChange}
                         />
-                        <label
-                            className="close-label"
-                            htmlFor="never-show-again"
-                        >
+                        <label className="close-label" htmlFor="never-show-again">
                             다시 보지 않기
                         </label>
                     </div>
 
-                    <span
-                        className="material-symbols-outlined"
-                        onClick={handleClose}
-                        style={{ cursor: "pointer", fontSize: "18px" }}
-                    >
+                    {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                    <span className="material-symbols-outlined" onClick={handleClose} style={{ cursor: "pointer", fontSize: "18px" }}>
                         close
                     </span>
                 </div>

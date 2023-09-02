@@ -1,5 +1,7 @@
 import React, { useRef, useState } from "react";
+
 import html2canvas from "html2canvas";
+
 import KakaoShare from "./KakaoShare";
 
 export interface DayData {
@@ -15,29 +17,19 @@ interface HtmlToCanvasProps {
     capturedImageURL?: string;
 }
 
-const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
-    savedData,
-    onCapture,
-    capturedImageURL,
-}) => {
+const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ savedData, onCapture, capturedImageURL }) => {
     const tableRef = useRef(null);
     const [loading, setLoading] = useState(false);
 
     const uploadCloud = async (blob: Blob): Promise<string> => {
         const formData = new FormData();
         formData.append("file", blob);
-        formData.append(
-            "upload_preset",
-            `${process.env.REACT_APP_CLOUD_PRESETS}`
-        );
+        formData.append("upload_preset", `${process.env.REACT_APP_CLOUD_PRESETS}`);
 
-        const response = await fetch(
-            `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
-            {
-                method: "POST",
-                body: formData,
-            }
-        );
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`, {
+            method: "POST",
+            body: formData,
+        });
 
         const data = await response.json();
         return data.secure_url;
@@ -48,9 +40,8 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
 
         if (tableRef.current) {
             const canvas = await html2canvas(tableRef.current);
-            const blob = await new Promise<Blob | null>((resolve) =>
-                canvas.toBlob(resolve)
-            );
+            // eslint-disable-next-line no-promise-executor-return
+            const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve));
 
             if (blob) {
                 const uploadedURL = await uploadCloud(blob);
@@ -62,7 +53,7 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({
     };
 
     const renderTableRows = () => {
-        return savedData.map((data) => (
+        return savedData.map(data => (
             <tr key={data.day}>
                 <td>{data.day}</td>
                 <td>{data.start || "-"}</td>

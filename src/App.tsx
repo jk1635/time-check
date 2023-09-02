@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ChangeEvent, useEffect, useState } from "react";
+
 import "./App.css";
-import Popup from "./Popup";
 import HtmlToCanvas, { DayData } from "./HtmlToCanvas";
+import Popup from "./Popup";
 
 interface WorkTime {
     start: string;
@@ -20,43 +22,33 @@ const App: React.FC = () => {
     const [workTimes, setWorkTimes] = useState<WorkTime[]>(
         JSON.parse(localStorage.getItem("workTimes") || "[]").length
             ? JSON.parse(localStorage.getItem("workTimes")!)
-            : Array.from({ length: 5 }, () => ({ start: "", end: "" }))
+            : Array.from({ length: 5 }, () => ({ start: "", end: "" })),
     );
     const [totalWorkTimes, setTotalWorkTimes] = useState<string[]>(
-        JSON.parse(localStorage.getItem("totalWorkTimes") || "[]") ||
-            Array.from({ length: 5 }, () => "00:00")
+        JSON.parse(localStorage.getItem("totalWorkTimes") || "[]") || Array.from({ length: 5 }, () => "00:00"),
     );
     const [halfDays, setHalfDays] = useState<boolean[]>(
-        JSON.parse(localStorage.getItem("halfDays") || "[]") ||
-            Array.from({ length: 5 }, () => false)
+        JSON.parse(localStorage.getItem("halfDays") || "[]") || Array.from({ length: 5 }, () => false),
     );
     const [fullDays, setFullDays] = useState<boolean[]>(
-        JSON.parse(localStorage.getItem("fullDays") || "[]") ||
-            Array.from({ length: 5 }, () => false)
+        JSON.parse(localStorage.getItem("fullDays") || "[]") || Array.from({ length: 5 }, () => false),
     );
 
     const [remainingWorkTime, setRemainingWorkTime] = useState<string>("40:00");
-    const [savedData, setSavedData] = useState<Array<string>>(
-        JSON.parse(localStorage.getItem("savedData") || "[]")
-    );
+    const [savedData, setSavedData] = useState<Array<string>>(JSON.parse(localStorage.getItem("savedData") || "[]"));
 
     useEffect(() => {
         let totalRealWorkTimeMins = 0;
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 5; i += 1) {
             totalRealWorkTimeMins += convertToMinutes(calculateRealWorkTime(i));
         }
 
-        const remainingWorkTimeMins =
-            convertToMinutes("40:00") - totalRealWorkTimeMins;
+        const remainingWorkTimeMins = convertToMinutes("40:00") - totalRealWorkTimeMins;
         const hours = Math.floor(remainingWorkTimeMins / 60);
         const mins = remainingWorkTimeMins % 60;
 
-        setRemainingWorkTime(
-            `${hours.toString().padStart(2, "0")}:${mins
-                .toString()
-                .padStart(2, "0")}`
-        );
+        setRemainingWorkTime(`${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`);
     }, [totalWorkTimes, halfDays, fullDays, workTimes]);
 
     useEffect(() => {
@@ -70,31 +62,21 @@ const App: React.FC = () => {
         localStorage.setItem("savedData", JSON.stringify(savedData));
     }, [savedData]);
 
-    const handleHalfDayChange = (
-        dayIndex: number,
-        event: ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleHalfDayChange = (dayIndex: number, event: ChangeEvent<HTMLInputElement>) => {
         const newHalfDays = [...halfDays];
         newHalfDays[dayIndex] = event.target.checked;
         setHalfDays(newHalfDays);
         localStorage.setItem("halfDays", JSON.stringify(newHalfDays));
     };
 
-    const handleFullDayChange = (
-        dayIndex: number,
-        event: ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleFullDayChange = (dayIndex: number, event: ChangeEvent<HTMLInputElement>) => {
         const newFullDays = [...fullDays];
         newFullDays[dayIndex] = event.target.checked;
         setFullDays(newFullDays);
         localStorage.setItem("fullDays", JSON.stringify(newFullDays));
     };
 
-    const handleTimeChange = (
-        dayIndex: number,
-        type: keyof WorkTime,
-        event: ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleTimeChange = (dayIndex: number, type: keyof WorkTime, event: ChangeEvent<HTMLInputElement>) => {
         let time = event.target.value;
         const isValidTime = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time);
 
@@ -106,15 +88,9 @@ const App: React.FC = () => {
         newWorkTimes[dayIndex][type] = time;
         setWorkTimes(newWorkTimes);
 
-        if (
-            newWorkTimes[dayIndex].start !== "0:00" &&
-            newWorkTimes[dayIndex].end !== "0:00"
-        ) {
+        if (newWorkTimes[dayIndex].start !== "0:00" && newWorkTimes[dayIndex].end !== "0:00") {
             const newTotalWorkTimes = [...totalWorkTimes];
-            newTotalWorkTimes[dayIndex] = calculateTotalWorkTime(
-                newWorkTimes[dayIndex].start,
-                newWorkTimes[dayIndex].end
-            );
+            newTotalWorkTimes[dayIndex] = calculateTotalWorkTime(newWorkTimes[dayIndex].start, newWorkTimes[dayIndex].end);
             setTotalWorkTimes(newTotalWorkTimes);
         } else {
             const newTotalWorkTimes = [...totalWorkTimes];
@@ -139,10 +115,7 @@ const App: React.FC = () => {
         setRemainingWorkTime("40:00");
 
         localStorage.setItem("workTimes", JSON.stringify(initialWorkTimes));
-        localStorage.setItem(
-            "totalWorkTimes",
-            JSON.stringify(initialTotalWorkTimes)
-        );
+        localStorage.setItem("totalWorkTimes", JSON.stringify(initialTotalWorkTimes));
         localStorage.setItem("halfDays", JSON.stringify(initialHalfDays));
         localStorage.setItem("fullDays", JSON.stringify(initialFullDays));
         window.location.reload();
@@ -150,11 +123,11 @@ const App: React.FC = () => {
 
     const handleSave = () => {
         const data: any = createWorkTimeData();
-        setSavedData((prevData) => [data, ...prevData]);
+        setSavedData(prevData => [data, ...prevData]);
     };
 
     const handleDelete = (index: number) => {
-        setSavedData((prevData) => prevData.filter((_, i) => i !== index));
+        setSavedData(prevData => prevData.filter((_, i) => i !== index));
     };
 
     const [mergedWorkData, setMergedWorkData] = useState<DayData[]>([]);
@@ -175,7 +148,7 @@ const App: React.FC = () => {
         daysOrder.forEach((day, index) => {
             if (day !== "잔여 근무 시간") {
                 mergedData.push({
-                    day: day,
+                    day,
                     start: data[index]?.start || "",
                     end: data[index]?.end || "",
                     total: data2[day] || "00:00",
@@ -197,13 +170,14 @@ const App: React.FC = () => {
 
         if (totalMins >= 780) {
             return "1:30";
-        } else if (totalMins >= 510) {
-            return "1:00";
-        } else if (totalMins >= 240) {
-            return "0:30";
-        } else {
-            return "0:00";
         }
+        if (totalMins >= 510) {
+            return "1:00";
+        }
+        if (totalMins >= 240) {
+            return "0:30";
+        }
+        return "0:00";
     };
 
     const calculateTotalWorkTime = (start: string, end: string) => {
@@ -212,17 +186,12 @@ const App: React.FC = () => {
         const hours = Math.floor(totalMins / 60);
         const mins = totalMins % 60;
 
-        return `${hours.toString().padStart(2, "0")}:${mins
-            .toString()
-            .padStart(2, "0")}`;
+        return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
     };
 
     const calculateRealWorkTime = (dayIndex: number) => {
         let totalWorkTime = totalWorkTimes[dayIndex];
-        const restTime = calculateRestTime(
-            workTimes[dayIndex]?.start || "0:00",
-            workTimes[dayIndex]?.end || "0:00"
-        );
+        const restTime = calculateRestTime(workTimes[dayIndex]?.start || "0:00", workTimes[dayIndex]?.end || "0:00");
 
         if (halfDays[dayIndex]) {
             totalWorkTime = addTime(totalWorkTime, "04:00");
@@ -240,9 +209,7 @@ const App: React.FC = () => {
         const hours = Math.floor(realWorkTimeMins / 60);
         const mins = realWorkTimeMins % 60;
 
-        return `${hours.toString().padStart(2, "0")}:${mins
-            .toString()
-            .padStart(2, "0")}`;
+        return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
     };
 
     const addTime = (time1: string, time2: string) => {
@@ -254,9 +221,7 @@ const App: React.FC = () => {
         const hours = Math.floor(totalTimeMins / 60);
         const mins = totalTimeMins % 60;
 
-        return `${hours.toString().padStart(2, "0")}:${mins
-            .toString()
-            .padStart(2, "0")}`;
+        return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
     };
 
     const convertToMinutes = (time: string) => {
@@ -292,10 +257,7 @@ const App: React.FC = () => {
             };
         }, {});
 
-        data["잔여 근무 시간"] =
-            convertToMinutes(remainingWorkTime) < 0
-                ? "근무시간초과"
-                : remainingWorkTime;
+        data["잔여 근무 시간"] = convertToMinutes(remainingWorkTime) < 0 ? "근무시간초과" : remainingWorkTime;
 
         return JSON.stringify(data, null, 2);
     };
@@ -304,11 +266,7 @@ const App: React.FC = () => {
         <div className="container">
             <Popup />
             <div className="info">
-                <a
-                    href={`sample.png`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                <a href="sample.png" target="_blank" rel="noopener noreferrer">
                     <span className="material-symbols-outlined">info</span>
                 </a>
             </div>
@@ -335,6 +293,7 @@ const App: React.FC = () => {
                     <tbody>
                         {Array.from({ length: 5 }, (_, i) => (
                             <tr key={i}>
+                                {/* eslint-disable-next-line @typescript-eslint/no-shadow */}
                                 {Array.from({ length: 10 }, (_, j) => (
                                     <td key={j}>
                                         {j === 0 ? days[i] : null}
@@ -343,18 +302,8 @@ const App: React.FC = () => {
                                                 type="text"
                                                 className="text-input"
                                                 placeholder="출근시간"
-                                                defaultValue={
-                                                    workTimes[i]
-                                                        ? workTimes[i].start
-                                                        : ""
-                                                }
-                                                onChange={(event) =>
-                                                    handleTimeChange(
-                                                        i,
-                                                        "start",
-                                                        event
-                                                    )
-                                                }
+                                                defaultValue={workTimes[i] ? workTimes[i].start : ""}
+                                                onChange={event => handleTimeChange(i, "start", event)}
                                             />
                                         )}
                                         {j === 2 && (
@@ -362,18 +311,8 @@ const App: React.FC = () => {
                                                 type="text"
                                                 className="text-input"
                                                 placeholder="퇴근시간"
-                                                defaultValue={
-                                                    workTimes[i]
-                                                        ? workTimes[i].end
-                                                        : ""
-                                                }
-                                                onChange={(event) =>
-                                                    handleTimeChange(
-                                                        i,
-                                                        "end",
-                                                        event
-                                                    )
-                                                }
+                                                defaultValue={workTimes[i] ? workTimes[i].end : ""}
+                                                onChange={event => handleTimeChange(i, "end", event)}
                                             />
                                         )}
                                         {j === 3 ? (
@@ -383,12 +322,7 @@ const App: React.FC = () => {
                                                 name={`halfDay-${i}`}
                                                 id={`halfDay-${i}`}
                                                 checked={halfDays[i]}
-                                                onChange={(event) =>
-                                                    handleHalfDayChange(
-                                                        i,
-                                                        event
-                                                    )
-                                                }
+                                                onChange={event => handleHalfDayChange(i, event)}
                                             />
                                         ) : null}
                                         {j === 4 ? (
@@ -398,28 +332,15 @@ const App: React.FC = () => {
                                                 name={`fullDay-${i}`}
                                                 id={`fullDay-${i}`}
                                                 checked={fullDays[i]}
-                                                onChange={(event) =>
-                                                    handleFullDayChange(
-                                                        i,
-                                                        event
-                                                    )
-                                                }
+                                                onChange={event => handleFullDayChange(i, event)}
                                             />
                                         ) : null}
-                                        {j === 5
-                                            ? calculateRealWorkTime(i)
-                                            : null}
-                                        {j === 6
-                                            ? calculateRestTime(
-                                                  workTimes[i].start,
-                                                  workTimes[i].end
-                                              )
-                                            : null}
+                                        {j === 5 ? calculateRealWorkTime(i) : null}
+                                        {j === 6 ? calculateRestTime(workTimes[i].start, workTimes[i].end) : null}
                                         {j === 7 ? totalWorkTimes[i] : null}
+                                        {/* eslint-disable-next-line no-nested-ternary */}
                                         {j === 8 && i === 0
-                                            ? convertToMinutes(
-                                                  remainingWorkTime
-                                              ) < 0
+                                            ? convertToMinutes(remainingWorkTime) < 0
                                                 ? "근무시간초과"
                                                 : remainingWorkTime
                                             : null}
@@ -434,10 +355,7 @@ const App: React.FC = () => {
                 <button className="outline-button" onClick={handleWorkTime}>
                     {showKakaoShareList ? "닫기" : "공유"}
                 </button>
-                <button
-                    className="outline-button"
-                    onClick={handleClearAllInputs}
-                >
+                <button className="outline-button" onClick={handleClearAllInputs}>
                     초기화
                 </button>
                 <button className="default-button" onClick={handleSave}>
@@ -456,21 +374,15 @@ const App: React.FC = () => {
                             right: "0%",
                         }}
                     >
-                        <HtmlToCanvas
-                            savedData={mergedWorkData}
-                            onCapture={handleCapture}
-                            capturedImageURL={capturedImageURL}
-                        />
+                        <HtmlToCanvas savedData={mergedWorkData} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
                     </div>
                 </div>
             )}
             {savedData.map((data, index) => (
+                // eslint-disable-next-line react/no-array-index-key
                 <div className="data-wrapper" key={index}>
                     <pre>{data}</pre>
-                    <button
-                        className="outline-button"
-                        onClick={() => handleDelete(index)}
-                    >
+                    <button className="outline-button" onClick={() => handleDelete(index)}>
                         삭제
                     </button>
                 </div>

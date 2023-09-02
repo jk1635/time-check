@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 declare global {
     interface Window {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Kakao: any;
     }
 }
@@ -13,11 +14,7 @@ type ShareContents = {
     imageUrl?: string;
 };
 
-const KakaoShare: React.FC<ShareContents> = ({
-    title = "스케줄",
-    description = "",
-    imageUrl = "",
-}) => {
+const KakaoShare: React.FC<ShareContents> = ({ title = "스케줄", description = "", imageUrl = "" }) => {
     useEffect(() => {
         if (window.Kakao && !window.Kakao.isInitialized()) {
             window.Kakao.init(appKey);
