@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const TimeCalculator: React.FC = () => {
+const TimeCheck: React.FC = () => {
     const [startTime, setStartTime] = useState("09:30");
     const [endTime, setEndTime] = useState("18:30");
     const [remainingTime, setRemainingTime] = useState("");
@@ -52,4 +52,4 @@ const TimeCalculator: React.FC = () => {
     );
 };
 
-export default TimeCalculator;
+export default TimeCheck;

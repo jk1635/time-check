@@ -2,8 +2,17 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 import "./App.css";
-import HtmlToCanvas, { DayData } from "./HtmlToCanvas";
+import HtmlToCanvas, { SummaryData } from "./HtmlToCanvas";
 import Popup from "./Popup";
+import {
+    getInitialState,
+    saveLocalStorage,
+    formatTime,
+    calculateRestTime,
+    calculateTotalWorkTime,
+    calculateWorkTimeWithLeave,
+    convertToMinutes,
+} from "./utils";
 
 interface WorkTime {
     start: string;
@@ -20,22 +29,45 @@ const App: React.FC = () => {
     const days = ["월", "화", "수", "목", "금"];
 
     const [workTimes, setWorkTimes] = useState<WorkTime[]>(
-        JSON.parse(localStorage.getItem("workTimes") || "[]").length
-            ? JSON.parse(localStorage.getItem("workTimes")!)
-            : Array.from({ length: 5 }, () => ({ start: "", end: "" })),
+        getInitialState(
+            "workTimes",
+            Array.from({ length: 5 }, () => ({ start: "", end: "" })),
+        ),
     );
     const [totalWorkTimes, setTotalWorkTimes] = useState<string[]>(
-        JSON.parse(localStorage.getItem("totalWorkTimes") || "[]") || Array.from({ length: 5 }, () => "00:00"),
+        getInitialState(
+            "totalWorkTimes",
+            Array.from({ length: 5 }, () => "00:00"),
+        ),
     );
     const [halfDays, setHalfDays] = useState<boolean[]>(
-        JSON.parse(localStorage.getItem("halfDays") || "[]") || Array.from({ length: 5 }, () => false),
+        getInitialState(
+            "halfDays",
+            Array.from({ length: 5 }, () => false),
+        ),
     );
     const [fullDays, setFullDays] = useState<boolean[]>(
-        JSON.parse(localStorage.getItem("fullDays") || "[]") || Array.from({ length: 5 }, () => false),
+        getInitialState(
+            "fullDays",
+            Array.from({ length: 5 }, () => false),
+        ),
     );
-
     const [remainingWorkTime, setRemainingWorkTime] = useState<string>("40:00");
-    const [savedData, setSavedData] = useState<Array<string>>(JSON.parse(localStorage.getItem("savedData") || "[]"));
+    const [savedData, setSavedData] = useState<Array<string>>(getInitialState("savedData", []));
+    const [summaryTable, setSummaryTable] = useState<SummaryData[]>([]);
+    const [capturedImageURL, setCapturedImageURL] = useState<string>();
+    const [showKakaoShareList, setShowKakaoShareList] = useState(false);
+
+    useEffect(() => {
+        saveLocalStorage("workTimes", workTimes);
+        saveLocalStorage("totalWorkTimes", totalWorkTimes);
+        saveLocalStorage("halfDays", halfDays);
+        saveLocalStorage("fullDays", fullDays);
+    }, [workTimes, totalWorkTimes, halfDays, fullDays]);
+
+    useEffect(() => {
+        saveLocalStorage("savedData", savedData);
+    }, [savedData]);
 
     useEffect(() => {
         let totalRealWorkTimeMins = 0;
@@ -45,58 +77,43 @@ const App: React.FC = () => {
         }
 
         const remainingWorkTimeMins = convertToMinutes("40:00") - totalRealWorkTimeMins;
-        const hours = Math.floor(remainingWorkTimeMins / 60);
-        const mins = remainingWorkTimeMins % 60;
 
-        setRemainingWorkTime(`${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`);
+        setRemainingWorkTime(formatTime(remainingWorkTimeMins));
     }, [totalWorkTimes, halfDays, fullDays, workTimes]);
-
-    useEffect(() => {
-        localStorage.setItem("workTimes", JSON.stringify(workTimes));
-        localStorage.setItem("totalWorkTimes", JSON.stringify(totalWorkTimes));
-        localStorage.setItem("halfDays", JSON.stringify(halfDays));
-        localStorage.setItem("fullDays", JSON.stringify(fullDays));
-    }, [workTimes, totalWorkTimes, halfDays, fullDays]);
-
-    useEffect(() => {
-        localStorage.setItem("savedData", JSON.stringify(savedData));
-    }, [savedData]);
 
     const handleHalfDayChange = (dayIndex: number, event: ChangeEvent<HTMLInputElement>) => {
         const newHalfDays = [...halfDays];
         newHalfDays[dayIndex] = event.target.checked;
         setHalfDays(newHalfDays);
-        localStorage.setItem("halfDays", JSON.stringify(newHalfDays));
+        saveLocalStorage("halfDays", newHalfDays);
     };
 
     const handleFullDayChange = (dayIndex: number, event: ChangeEvent<HTMLInputElement>) => {
         const newFullDays = [...fullDays];
         newFullDays[dayIndex] = event.target.checked;
         setFullDays(newFullDays);
-        localStorage.setItem("fullDays", JSON.stringify(newFullDays));
+        saveLocalStorage("fullDays", newFullDays);
     };
 
     const handleTimeChange = (dayIndex: number, type: keyof WorkTime, event: ChangeEvent<HTMLInputElement>) => {
-        let time = event.target.value;
-        const isValidTime = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time);
+        const timeInput = event.target.value;
+        const isValidTime = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(timeInput);
 
-        if (!isValidTime || time === "") {
-            time = "0:00";
+        const time = isValidTime && timeInput !== "" ? timeInput : "0:00";
+
+        const updatedWorkTimes = [...workTimes];
+        updatedWorkTimes[dayIndex][type] = time;
+
+        let updatedTotalWorkTime = "00:00";
+        if (updatedWorkTimes[dayIndex].start !== "0:00" && updatedWorkTimes[dayIndex].end !== "0:00") {
+            updatedTotalWorkTime = calculateTotalWorkTime(updatedWorkTimes[dayIndex].start, updatedWorkTimes[dayIndex].end);
         }
 
-        const newWorkTimes = [...workTimes];
-        newWorkTimes[dayIndex][type] = time;
-        setWorkTimes(newWorkTimes);
+        const updatedTotalWorkTimes = [...totalWorkTimes];
+        updatedTotalWorkTimes[dayIndex] = updatedTotalWorkTime;
 
-        if (newWorkTimes[dayIndex].start !== "0:00" && newWorkTimes[dayIndex].end !== "0:00") {
-            const newTotalWorkTimes = [...totalWorkTimes];
-            newTotalWorkTimes[dayIndex] = calculateTotalWorkTime(newWorkTimes[dayIndex].start, newWorkTimes[dayIndex].end);
-            setTotalWorkTimes(newTotalWorkTimes);
-        } else {
-            const newTotalWorkTimes = [...totalWorkTimes];
-            newTotalWorkTimes[dayIndex] = "00:00";
-            setTotalWorkTimes(newTotalWorkTimes);
-        }
+        setWorkTimes(updatedWorkTimes);
+        setTotalWorkTimes(updatedTotalWorkTimes);
     };
 
     const handleClearAllInputs = () => {
@@ -114,10 +131,10 @@ const App: React.FC = () => {
         setFullDays(initialFullDays);
         setRemainingWorkTime("40:00");
 
-        localStorage.setItem("workTimes", JSON.stringify(initialWorkTimes));
-        localStorage.setItem("totalWorkTimes", JSON.stringify(initialTotalWorkTimes));
-        localStorage.setItem("halfDays", JSON.stringify(initialHalfDays));
-        localStorage.setItem("fullDays", JSON.stringify(initialFullDays));
+        saveLocalStorage("workTimes", initialWorkTimes);
+        saveLocalStorage("totalWorkTimes", initialTotalWorkTimes);
+        saveLocalStorage("halfDays", initialHalfDays);
+        saveLocalStorage("fullDays", initialFullDays);
         window.location.reload();
     };
 
@@ -130,63 +147,31 @@ const App: React.FC = () => {
         setSavedData(prevData => prevData.filter((_, i) => i !== index));
     };
 
-    const [mergedWorkData, setMergedWorkData] = useState<DayData[]>([]);
-    const [capturedImageURL, setCapturedImageURL] = useState<string>();
-    const [showKakaoShareList, setShowKakaoShareList] = useState(false);
-
     const handleCapture = (url: string) => {
         setCapturedImageURL(url);
     };
 
     const handleWorkTime = async () => {
-        const data: any = workTimes;
-        const data2: any = JSON.parse(createWorkTimeData());
+        const workTimeData = JSON.parse(createWorkTimeData());
 
         const daysOrder = ["월", "화", "수", "목", "금", "잔여 근무 시간"];
-        const mergedData: DayData[] = [];
-
-        daysOrder.forEach((day, index) => {
+        const mergedData: SummaryData[] = daysOrder.map((day, index) => {
             if (day !== "잔여 근무 시간") {
-                mergedData.push({
+                return {
                     day,
-                    start: data[index]?.start || "",
-                    end: data[index]?.end || "",
-                    total: data2[day] || "00:00",
-                });
-            } else {
-                mergedData.push({
-                    day: "잔여 근무 시간",
-                    total: data2["잔여 근무 시간"],
-                });
+                    start: workTimes[index]?.start || "",
+                    end: workTimes[index]?.end || "",
+                    total: workTimeData[day] || "00:00",
+                };
             }
+            return {
+                day: "잔여 근무 시간",
+                total: workTimeData["잔여 근무 시간"],
+            };
         });
 
-        setMergedWorkData(mergedData);
-        setShowKakaoShareList(!showKakaoShareList);
-    };
-
-    const calculateRestTime = (start: string, end: string) => {
-        const totalMins = calculateTotalMinutes(start, end);
-
-        if (totalMins >= 780) {
-            return "1:30";
-        }
-        if (totalMins >= 510) {
-            return "1:00";
-        }
-        if (totalMins >= 240) {
-            return "0:30";
-        }
-        return "0:00";
-    };
-
-    const calculateTotalWorkTime = (start: string, end: string) => {
-        const totalMins = calculateTotalMinutes(start, end);
-
-        const hours = Math.floor(totalMins / 60);
-        const mins = totalMins % 60;
-
-        return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
+        setSummaryTable(mergedData);
+        setShowKakaoShareList(prevState => !prevState);
     };
 
     const calculateRealWorkTime = (dayIndex: number) => {
@@ -194,11 +179,11 @@ const App: React.FC = () => {
         const restTime = calculateRestTime(workTimes[dayIndex]?.start || "0:00", workTimes[dayIndex]?.end || "0:00");
 
         if (halfDays[dayIndex]) {
-            totalWorkTime = addTime(totalWorkTime, "04:00");
+            totalWorkTime = calculateWorkTimeWithLeave(totalWorkTime, "04:00");
         }
 
         if (fullDays[dayIndex]) {
-            totalWorkTime = addTime(totalWorkTime, "08:00");
+            totalWorkTime = calculateWorkTimeWithLeave(totalWorkTime, "08:00");
         }
 
         const totalWorkTimeMins = convertToMinutes(totalWorkTime);
@@ -206,44 +191,13 @@ const App: React.FC = () => {
 
         const realWorkTimeMins = totalWorkTimeMins - restTimeMins;
 
-        const hours = Math.floor(realWorkTimeMins / 60);
-        const mins = realWorkTimeMins % 60;
-
-        return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
-    };
-
-    const addTime = (time1: string, time2: string) => {
-        const time1Mins = convertToMinutes(time1);
-        const time2Mins = convertToMinutes(time2);
-
-        const totalTimeMins = time1Mins + time2Mins;
-
-        const hours = Math.floor(totalTimeMins / 60);
-        const mins = totalTimeMins % 60;
-
-        return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
-    };
-
-    const convertToMinutes = (time: string) => {
-        if (!time) return 0;
-        const [hours, mins] = time.split(":").map(Number);
-        return hours * 60 + mins;
-    };
-
-    const calculateTotalMinutes = (start: string, end: string) => {
-        if (!start || !end) return 0;
-
-        const [startHour, startMin] = start.split(":").map(Number);
-        const [endHour, endMin] = end.split(":").map(Number);
-
-        const startMinutes = startHour * 60 + startMin + 1;
-        const endMinutes = endHour * 60 + endMin;
-
-        return endMinutes - startMinutes;
+        return formatTime(realWorkTimeMins);
     };
 
     const createWorkTimeData = () => {
-        const data: any = days.reduce((acc, day, index) => {
+        const data: any = {};
+
+        days.forEach((day, index) => {
             let dayData = `${calculateRealWorkTime(index)}`;
             if (halfDays[index]) {
                 dayData += " (반차)";
@@ -251,11 +205,8 @@ const App: React.FC = () => {
             if (fullDays[index]) {
                 dayData += " (연차)";
             }
-            return {
-                ...acc,
-                [day]: dayData,
-            };
-        }, {});
+            data[day] = dayData;
+        });
 
         data["잔여 근무 시간"] = convertToMinutes(remainingWorkTime) < 0 ? "근무시간초과" : remainingWorkTime;
 
@@ -374,7 +325,7 @@ const App: React.FC = () => {
                             right: "0%",
                         }}
                     >
-                        <HtmlToCanvas savedData={mergedWorkData} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
+                        <HtmlToCanvas savedData={summaryTable} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
                     </div>
                 </div>
             )}

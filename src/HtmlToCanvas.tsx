@@ -4,7 +4,7 @@ import html2canvas from "html2canvas";
 
 import KakaoShare from "./KakaoShare";
 
-export interface DayData {
+export interface SummaryData {
     day: string;
     start?: string;
     end?: string;
@@ -12,7 +12,7 @@ export interface DayData {
 }
 
 interface HtmlToCanvasProps {
-    savedData: Array<DayData>;
+    savedData: Array<SummaryData>;
     onCapture: (url: string) => void;
     capturedImageURL?: string;
 }
