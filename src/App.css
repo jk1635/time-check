@@ -8,12 +8,12 @@
 }
 
 .info a .material-symbols-outlined {
-    color: rgb(10, 44, 76);
+    color:#0A2C4C;
     font-size: 20px;
 }
 
 .info a:hover .material-symbols-outlined {
-    color: rgb(234, 238, 244);
+    color:#EAEEF4;
 }
 
 .table-wrapper {
@@ -24,16 +24,16 @@
 
 table {
     width: 100%;
-    border-top: 1px solid rgb(234, 238, 244);
-    border-bottom: 1px solid rgb(234, 238, 244);
+    border-top: 1px solid #EAEEF4;;
+    border-bottom: 1px solid #EAEEF4;;
     border-collapse: collapse;
-    color: rgb(55, 81, 106);
+    color: #37516A;
     font-size: 12px;
     font-weight: 400;
 }
 
 thead {
-    color: rgb(55, 81, 106);
+    color: #37516A;
 }
 
 tr {
@@ -49,22 +49,22 @@ th {
 }
 
 tbody {
-    color: rgb(55, 81, 106);
+    color: #37516A;
 }
 
 tbody tr:nth-of-type(odd) {
-    background-color: rgb(246, 250, 253);
+    background-color: #F6FAFD;
 }
 
 /* tbody tr:hover {
-  background-color: rgb(234, 238, 244);
+  background-color: #EAEEF4;
 } */
 
 td {
     display: table-cell;
     padding: 0px 8px;
     height: 52px;
-    border-top: 1px solid rgb(234, 238, 244);
+    border-top: 1px solid #EAEEF4;
     text-align: left;
     vertical-align: middle;
     white-space: nowrap;
@@ -78,7 +78,7 @@ td .text-input {
 }
 
 td .text-input::placeholder {
-    color: rgb(215, 228, 230);
+    color: #D7E4E6;
 }
 
 td .checkbox-input {
@@ -108,22 +108,13 @@ button {
 .default-button {
     border: none;
     color: #ffffff;
-    background-color: rgb(10, 44, 76);
+    background-color: #0A2C4C;
 }
 
 .outline-button {
-    border: 1px solid rgb(215, 228, 230);
+    border: 1px solid #D7E4E6;
     background-color: transparent;
 }
-
-/* .kakao-button {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: none;
-    color: #000000;
-    background-color: #fee500;
-} */
 
 .summary-table {
     position: absolute;
@@ -137,26 +128,11 @@ button {
     margin-bottom: 5px;
     padding: 12px;
     width: 300px;
-    border: 1px solid rgb(234, 238, 244);
+    border: 1px solid #EAEEF4;
     border-radius: 5px;
 }
 
 .description-wrapper {
     width: 100%;
-    background-color: rgb(234, 238, 244);
-}
-
-.html-table {
-    padding: 12px;
-    border: 1px solid rgb(234, 238, 244);
-    border-radius: 5px;
-    background-color: #ffffff;
-    z-index: 10;
-}
-
-.capture-button-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 12px;
-    gap: 5px;
+    background-color: #EAEEF4;
 }

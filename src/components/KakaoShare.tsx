@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import "./KakaoShare.css";
 
 declare global {
     interface Window {
@@ -6,15 +7,16 @@ declare global {
         Kakao: any;
     }
 }
+
 const appKey = process.env.REACT_APP_KAKAO_SHARE_KEY;
 
-type ShareContents = {
+interface KakaoShareProps {
     title?: string;
     description?: string;
     imageUrl?: string;
-};
+}
 
-const KakaoShare: React.FC<ShareContents> = ({ title = "스케줄", description = "", imageUrl = "" }) => {
+const KakaoShare: React.FC<KakaoShareProps> = ({ title = "스케줄", description = "", imageUrl = "" }) => {
     useEffect(() => {
         if (window.Kakao && !window.Kakao.isInitialized()) {
             window.Kakao.init(appKey);

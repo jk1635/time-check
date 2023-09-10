@@ -1,32 +1,18 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 import "./App.css";
-import HtmlToCanvas, { SummaryData } from "./HtmlToCanvas";
-import Popup from "./Popup";
-import {
-    getInitialState,
-    saveLocalStorage,
-    formatTime,
-    calculateRestTime,
-    calculateTotalWorkTime,
-    calculateWorkTimeWithDayOff,
-    convertToMinutes,
-} from "./utils";
-
-export interface WorkTime {
-    start: string;
-    end: string;
-}
+import HtmlToCanvas from "./components/HtmlToCanvas";
+import Popup from "./components/Popup";
+import { days, initialFullDays, initialHalfDays, initialTotalWorkTimes, initialWorkTimes } from "./constants";
+import { SummaryData, WorkTime } from "./types";
+import { getInitialState, saveLocalStorage } from "./utils/localStorageUtils";
+import { formatTime, calculateRestTime, calculateTotalWorkTime, calculateWorkTimeWithDayOff, convertToMinutes } from "./utils/timeUtils";
 
 interface WorkTimeData {
     [key: string]: string;
 }
 
-const days = ["월", "화", "수", "목", "금"];
-const initialWorkTimes = Array.from({ length: 5 }, () => ({ start: "", end: "" }));
-const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");
-const initialHalfDays = Array.from({ length: 5 }, () => false);
-const initialFullDays = Array.from({ length: 5 }, () => false);
+const tableHeaders = ["요일", "출근 시간", "퇴근 시간", "반차", "연차", "실 근무 시간", "휴게 시간", "전체 근무 시간", "잔여 근무 시간"];
 
 const App: React.FC = () => {
     const [workTimes, setWorkTimes] = useState<WorkTime[]>(getInitialState("workTimes", initialWorkTimes));
@@ -181,18 +167,6 @@ const App: React.FC = () => {
 
         return data;
     };
-
-    const tableHeaders = [
-        "요일",
-        "출근 시간",
-        "퇴근 시간",
-        "반차",
-        "연차",
-        "실 근무 시간",
-        "휴게 시간",
-        "전체 근무 시간",
-        "잔여 근무 시간",
-    ];
 
     const weeklyTimeStatus = convertToMinutes(remainingWorkTime) < 0 ? "근무시간초과" : remainingWorkTime;
 

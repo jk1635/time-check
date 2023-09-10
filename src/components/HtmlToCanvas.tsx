@@ -3,13 +3,8 @@ import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 
 import KakaoShare from "./KakaoShare";
-
-export interface SummaryData {
-    day: string;
-    start?: string;
-    end?: string;
-    total: string;
-}
+import "./HtmlToCanvas.css";
+import { SummaryData } from "../types";
 
 interface HtmlToCanvasProps {
     savedData: Array<SummaryData>;
@@ -80,7 +75,7 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ savedData, onCapture, captu
             )}
             <div className="capture-button-wrapper">
                 <button className="outline-button" onClick={captureTable}>
-                    {loading ? "생성하는 중" : "1. 이미지 생성"}
+                    {loading ? "생성하는 중" : "이미지 생성"}
                 </button>
                 <KakaoShare imageUrl={capturedImageURL} />
             </div>
