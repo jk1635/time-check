@@ -32,10 +32,10 @@
 
 .close-comment {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
-.close-checkbox {
+/* .close-checkbox {
     width: 12px;
     height: 12px;
     cursor: pointer;
@@ -49,4 +49,4 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */

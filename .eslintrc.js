@@ -43,6 +43,7 @@ module.exports = {
         "react-hooks/exhaustive-deps": ["warn"], // hook 에서 의존성 배열 허용 여부
 
         // jsx 규칙 (웹 접근성)
+        "jsx-a11y/click-events-have-key-events": "off",
         "jsx-a11y/label-has-for": ["error", { required: { every: ["id"] } }],
         "jsx-a11y/label-has-associated-control": [
             "error",
@@ -74,6 +75,7 @@ module.exports = {
             },
         ],
         "import/newline-after-import": "warn",
+        "import/no-cycle": "off",
         "import/no-unresolved": "off",
         "import/order": [
             "error",

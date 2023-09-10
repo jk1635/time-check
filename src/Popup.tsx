@@ -3,7 +3,7 @@ import "./Popup.css";
 
 const Popup = () => {
     const [showPopup, setShowPopup] = useState(false);
-    const [neverShowAgain, setNeverShowAgain] = useState(false);
+    // const [neverShowAgain, setNeverShowAgain] = useState(false);
     const [scrollPosition, setScrollPosition] = useState<number>(0);
 
     useEffect(() => {
@@ -20,21 +20,19 @@ const Popup = () => {
             document.body.style.overflow = "hidden";
         } else {
             window.scrollTo(0, scrollPosition);
-
             document.body.style.overflow = "auto";
         }
     }, [showPopup]);
 
     const handleClose = () => {
-        if (neverShowAgain) {
-            localStorage.setItem("hidePopup", "true");
-        }
+        // if (neverShowAgain) {}
+        localStorage.setItem("hidePopup", "true");
         setShowPopup(false);
     };
 
-    const handleCheckboxChange = () => {
-        setNeverShowAgain(prevState => !prevState);
-    };
+    // const handleCheckboxChange = () => {
+    //     setNeverShowAgain(prevState => !prevState);
+    // };
 
     if (!showPopup) {
         return null;
@@ -51,7 +49,7 @@ const Popup = () => {
                     <br />
                 </span>
                 <div className="close-comment">
-                    <div className="input-wrapper">
+                    {/* <div className="input-wrapper">
                         <input
                             type="checkbox"
                             className="close-checkbox"
@@ -62,10 +60,14 @@ const Popup = () => {
                         <label className="close-label" htmlFor="never-show-again">
                             다시 보지 않기
                         </label>
-                    </div>
-
-                    {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                    <span className="material-symbols-outlined" onClick={handleClose} style={{ cursor: "pointer", fontSize: "18px" }}>
+                    </div> */}
+                    <span
+                        role="button"
+                        tabIndex={0}
+                        className="material-symbols-outlined"
+                        onClick={handleClose}
+                        style={{ cursor: "pointer", fontSize: "18px" }}
+                    >
                         close
                     </span>
                 </div>

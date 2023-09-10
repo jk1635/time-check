@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { WorkTime } from "./App";
+
 export const getInitialState: <T>(key: string, initialValue: T) => T = (key, initialValue) => {
     const storedValue = localStorage.getItem(key);
     return storedValue ? JSON.parse(storedValue) : initialValue;
 };
 
-export const saveLocalStorage = (key: string, data: any) => {
+export const saveLocalStorage = (key: string, data: Array<string | boolean | WorkTime>) => {
     localStorage.setItem(key, JSON.stringify(data));
 };
 
@@ -34,8 +35,8 @@ export const calculateTotalWorkTime = (start: string, end: string) => {
     return formatTime(totalMins);
 };
 
-export const calculateWorkTimeWithLeave = (time1: string, time2: string) => {
-    const totalMins = convertToMinutes(time1) + convertToMinutes(time2);
+export const calculateWorkTimeWithDayOff = (totalWorkTime: string, dayOffTime: string) => {
+    const totalMins = convertToMinutes(totalWorkTime) + convertToMinutes(dayOffTime);
     return formatTime(totalMins);
 };
 
