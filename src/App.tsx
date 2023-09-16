@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 
 import "./App.css";
 import HtmlToCanvas from "./components/HtmlToCanvas";
+import InfoAndReport from "./components/InfoAndReport";
 import Popup from "./components/Popup";
 import { days, initialFullDays, initialHalfDays, initialTotalWorkTimes, initialWorkTimes } from "./constants";
 import { SummaryData, WorkTime } from "./types";
@@ -173,11 +174,7 @@ const App: React.FC = () => {
     return (
         <div className="container">
             <Popup />
-            <div className="info">
-                <a href="sample.png" target="_blank" rel="noopener noreferrer">
-                    <span className="material-symbols-outlined">info</span>
-                </a>
-            </div>
+            <InfoAndReport />
             <div className="table-wrapper">
                 <table>
                     <thead>

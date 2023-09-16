@@ -2,20 +2,6 @@
     padding: 12px;
 }
 
-.info {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.info a .material-symbols-outlined {
-    color:#0A2C4C;
-    font-size: 20px;
-}
-
-.info a:hover .material-symbols-outlined {
-    color:#EAEEF4;
-}
-
 .table-wrapper {
     margin-top: 2px;
     min-width: 300px;
