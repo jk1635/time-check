@@ -212,6 +212,7 @@ const App: React.FC = () => {
                                             <input
                                                 type="checkbox"
                                                 className="checkbox-input"
+                                                tabIndex={-1}
                                                 name={`halfDay-${i}`}
                                                 id={`halfDay-${i}`}
                                                 checked={halfDays[i]}
@@ -222,6 +223,7 @@ const App: React.FC = () => {
                                             <input
                                                 type="checkbox"
                                                 className="checkbox-input"
+                                                tabIndex={-1}
                                                 name={`fullDay-${i}`}
                                                 id={`fullDay-${i}`}
                                                 checked={fullDays[i]}
