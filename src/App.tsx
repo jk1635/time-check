@@ -22,6 +22,7 @@ const App: React.FC = () => {
     const [fullDays, setFullDays] = useState<boolean[]>(getInitialState("fullDays", initialFullDays));
 
     const [remainingWorkTime, setRemainingWorkTime] = useState<string>("40:00");
+    const [overtime, setOvertime] = useState<string>("00:00");
     const [savedData, setSavedData] = useState<Array<string>>(getInitialState("savedData", []));
     const [summaryTable, setSummaryTable] = useState<SummaryData[]>([]);
     const [capturedImageURL, setCapturedImageURL] = useState<string>();
@@ -43,6 +44,11 @@ const App: React.FC = () => {
         });
 
         const remainingWorkTimeMinute = convertToMinutes("40:00") - totalRealWorkTimeMinute;
+
+        setOvertime("00:00");
+        if (remainingWorkTimeMinute < 0) {
+            setOvertime(formatTime(Math.abs(remainingWorkTimeMinute)));
+        }
 
         setRemainingWorkTime(formatTime(remainingWorkTimeMinute));
     }, [totalWorkTimes, halfDays, fullDays, workTimes]);
@@ -164,12 +170,12 @@ const App: React.FC = () => {
             data[day] = dayStatus.length ? `${realWorkTime} (${dayStatus.join("/")})` : realWorkTime;
         });
 
-        data["잔여 근무 시간"] = convertToMinutes(remainingWorkTime) < 0 ? "근무시간초과" : `${remainingWorkTime}`;
+        data["잔여 근무 시간"] = convertToMinutes(remainingWorkTime) < 0 ? `-${overtime}` : `${remainingWorkTime}`;
 
         return data;
     };
 
-    const weeklyTimeStatus = convertToMinutes(remainingWorkTime) < 0 ? "근무시간초과" : remainingWorkTime;
+    const overtimeStatus = convertToMinutes(remainingWorkTime) < 0 ? `-${overtime}` : remainingWorkTime;
 
     return (
         <div className="container">
@@ -233,7 +239,7 @@ const App: React.FC = () => {
                                         {j === 5 ? calculateRealWorkTime(i) : null}
                                         {j === 6 ? calculateRestTime(workTimes[i].start, workTimes[i].end) : null}
                                         {j === 7 ? totalWorkTimes[i] : null}
-                                        {j === 8 && i === 0 ? weeklyTimeStatus : null}
+                                        {j === 8 && i === 0 ? overtimeStatus : null}
                                     </td>
                                 ))}
                             </tr>
