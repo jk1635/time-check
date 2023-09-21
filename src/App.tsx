@@ -239,7 +239,11 @@ const App: React.FC = () => {
                                         {j === 5 ? calculateRealWorkTime(i) : null}
                                         {j === 6 ? calculateRestTime(workTimes[i].start, workTimes[i].end) : null}
                                         {j === 7 ? totalWorkTimes[i] : null}
-                                        {j === 8 && i === 0 ? overtimeStatus : null}
+                                        {j === 8 && i === 0 ? (
+                                            <span style={{ color: convertToMinutes(remainingWorkTime) < 0 ? "#EF4444" : "#37516A" }}>
+                                                {overtimeStatus}
+                                            </span>
+                                        ) : null}
                                     </td>
                                 ))}
                             </tr>
