@@ -1,5 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 
+import { inject } from "@vercel/analytics";
+
 import "./App.css";
 import HtmlToCanvas from "./components/HtmlToCanvas";
 import InfoAndReport from "./components/InfoAndReport";
@@ -8,6 +10,8 @@ import { days, initialFullDays, initialHalfDays, initialTotalWorkTimes, initialW
 import { SummaryData, WorkTime } from "./types";
 import { getInitialState, saveLocalStorage } from "./utils/localStorageUtils";
 import { formatTime, calculateRestTime, calculateTotalWorkTime, calculateWorkTimeWithDayOff, convertToMinutes } from "./utils/timeUtils";
+
+inject();
 
 interface WorkTimeData {
     [key: string]: string;
