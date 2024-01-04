@@ -14,9 +14,10 @@ interface KakaoShareProps {
     title?: string;
     description?: string;
     imageUrl?: string;
+    imageCheck: boolean;
 }
 
-const KakaoShare: React.FC<KakaoShareProps> = ({ title = "스케줄", description = "", imageUrl = "" }) => {
+const KakaoShare: React.FC<KakaoShareProps> = ({ title = "스케줄", description = "", imageUrl = "", imageCheck }) => {
     useEffect(() => {
         if (window.Kakao && !window.Kakao.isInitialized()) {
             window.Kakao.init(appKey);
@@ -24,18 +25,12 @@ const KakaoShare: React.FC<KakaoShareProps> = ({ title = "스케줄", descriptio
     }, []);
 
     const share = () => {
-        if (window.Kakao && window.Kakao.isInitialized()) {
+        if (!imageCheck) {
+            alert("이미지를 먼저 생성해 주세요.");
+        } else if (window.Kakao && window.Kakao.isInitialized()) {
             window.Kakao.Link.sendDefault({
                 objectType: "feed",
-                content: {
-                    title,
-                    description,
-                    imageUrl,
-                    link: {
-                        webUrl: imageUrl,
-                        mobileWebUrl: imageUrl,
-                    },
-                },
+                content: { title, description, imageUrl, link: { webUrl: imageUrl, mobileWebUrl: imageUrl } },
             });
         }
     };

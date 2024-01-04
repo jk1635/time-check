@@ -15,6 +15,7 @@ interface HtmlToCanvasProps {
 const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ savedData, onCapture, capturedImageURL }) => {
     const tableRef = useRef(null);
     const [loading, setLoading] = useState(false);
+    const [imageCheck, setImageCheck] = useState(false);
 
     const uploadCloud = async (blob: Blob): Promise<string> => {
         const formData = new FormData();
@@ -45,6 +46,7 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ savedData, onCapture, captu
         }
 
         setLoading(false);
+        setImageCheck(true);
     };
 
     const renderTableRows = () => {
@@ -77,7 +79,7 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ savedData, onCapture, captu
                 <button className="outline-button" onClick={captureTable}>
                     {loading ? "생성하는 중" : "1. 이미지 생성"}
                 </button>
-                <KakaoShare imageUrl={capturedImageURL} />
+                <KakaoShare imageCheck={imageCheck} imageUrl={capturedImageURL} />
             </div>
         </div>
     );
