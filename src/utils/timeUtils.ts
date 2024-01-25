@@ -1,44 +1,37 @@
-export const convertToMinutes = (time: string) => {
+export const timeToMinutes = (time: string) => {
     if (!time) return 0;
-    const [hours, mins] = time.split(":").map(Number);
-    return hours * 60 + mins;
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
 };
 
-export const formatTime = (totalMins: number) => {
-    const hours = Math.floor(totalMins / 60);
-    const mins = totalMins % 60;
-    return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
+export const minutesToTime = (totalMinutes: number) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 };
 
 export const calculateTotalMinutes = (start: string, end: string) => {
     if (!start || !end) return 0;
-
-    const startMinutes = convertToMinutes(start) + 1;
-    const endMinutes = convertToMinutes(end);
-
+    const startMinutes = timeToMinutes(start) + 1;
+    const endMinutes = timeToMinutes(end);
     return endMinutes - startMinutes;
 };
 
 export const calculateTotalWorkTime = (start: string, end: string) => {
-    const totalMins = calculateTotalMinutes(start, end);
-    return formatTime(totalMins);
-};
-
-export const calculateWorkTimeWithDayOff = (totalWorkTime: string, dayOffTime: string) => {
-    const totalMins = convertToMinutes(totalWorkTime) + convertToMinutes(dayOffTime);
-    return formatTime(totalMins);
+    const totalMinutes = calculateTotalMinutes(start, end);
+    return minutesToTime(totalMinutes);
 };
 
 export const calculateRestTime = (start: string, end: string) => {
-    const totalMins = calculateTotalMinutes(start, end);
+    const totalMinutes = calculateTotalMinutes(start, end);
 
-    if (totalMins >= 780) {
+    if (totalMinutes >= 780) {
         return "1:30";
     }
-    if (totalMins >= 510) {
+    if (totalMinutes >= 510) {
         return "1:00";
     }
-    if (totalMins >= 240) {
+    if (totalMinutes >= 240) {
         return "0:30";
     }
     return "0:00";

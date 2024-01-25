@@ -1,4 +1,4 @@
-export const days = ["월", "화", "수", "목", "금"];
+export const weekdays = ["월", "화", "수", "목", "금"];
 
 export const initialWorkTimes = Array.from({ length: 5 }, () => ({ start: "", end: "" }));
 export const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");

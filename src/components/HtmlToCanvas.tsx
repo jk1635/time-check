@@ -4,15 +4,15 @@ import html2canvas from "html2canvas";
 
 import KakaoShare from "./KakaoShare";
 import "./HtmlToCanvas.css";
-import { SummaryData } from "../types";
+import { SummaryTable } from "../types";
 
 interface HtmlToCanvasProps {
-    savedData: Array<SummaryData>;
+    summaryTable: Array<SummaryTable>;
     onCapture: (url: string) => void;
     capturedImageURL?: string;
 }
 
-const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ savedData, onCapture, capturedImageURL }) => {
+const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ summaryTable, onCapture, capturedImageURL }) => {
     const tableRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [imageCheck, setImageCheck] = useState(false);
@@ -50,25 +50,28 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ savedData, onCapture, captu
     };
 
     const renderTableRows = () => {
-        return savedData.map(data => (
-            <tr key={data.day}>
-                <td>{data.day}</td>
-                <td>{data.start || "-"}</td>
-                <td>{data.end || "-"}</td>
-                <td>{data.total}</td>
-            </tr>
-        ));
+        return summaryTable.map(data => {
+            const lastRow = data.title === "잔여 근무 시간";
+            return (
+                <tr key={data.title}>
+                    <td>{data.title}</td>
+                    <td>{lastRow ? "" : data.start || "-"}</td>
+                    <td>{lastRow ? "" : data.end || "-"}</td>
+                    <td>{lastRow ? data.remain : data.real || "-"}</td>
+                </tr>
+            );
+        });
     };
 
     return (
         <div className="html-table">
-            {savedData.length > 0 && (
+            {summaryTable.length > 0 && (
                 <table ref={tableRef}>
                     <thead>
                         <tr>
                             <th>요일</th>
-                            <th>시작 시간</th>
-                            <th>종료 시간</th>
+                            <th>출근 시간</th>
+                            <th>퇴근 시간</th>
                             <th>실 근무 시간</th>
                         </tr>
                     </thead>
