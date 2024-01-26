@@ -1,3 +1,5 @@
+import { WorkTime } from "../types";
+
 export const timeToMinutes = (time: string) => {
     if (!time) return 0;
     const [hours, minutes] = time.split(":").map(Number);
@@ -10,21 +12,15 @@ export const minutesToTime = (totalMinutes: number) => {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 };
 
-export const calculateTotalMinutes = (start: string, end: string) => {
+export const calculateTotalWorkTime = (start: string, end: string) => {
     if (!start || !end) return 0;
     const startMinutes = timeToMinutes(start) + 1;
     const endMinutes = timeToMinutes(end);
     return endMinutes - startMinutes;
 };
 
-export const calculateTotalWorkTime = (start: string, end: string) => {
-    const totalMinutes = calculateTotalMinutes(start, end);
-    return minutesToTime(totalMinutes);
-};
-
 export const calculateRestTime = (start: string, end: string) => {
-    const totalMinutes = calculateTotalMinutes(start, end);
-
+    const totalMinutes = calculateTotalWorkTime(start, end);
     if (totalMinutes >= 780) {
         return "1:30";
     }
@@ -35,4 +31,15 @@ export const calculateRestTime = (start: string, end: string) => {
         return "0:30";
     }
     return "0:00";
+};
+
+export const calculateDayOffWorkTime = (dayItem: WorkTime) => {
+    let totalMinutes = timeToMinutes(dayItem.total);
+    if (dayItem.halfDay) {
+        totalMinutes += timeToMinutes("04:00");
+    }
+    if (dayItem.fullDay) {
+        totalMinutes += timeToMinutes("08:00");
+    }
+    return totalMinutes;
 };

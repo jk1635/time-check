@@ -2,33 +2,29 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 
 import { inject } from "@vercel/analytics";
 import "./App.css";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 import HtmlToCanvas from "./components/HtmlToCanvas";
 import InfoAndReport from "./components/InfoAndReport";
 import Popup from "./components/Popup";
-import { weekdays } from "./constants";
-import { SummaryTable, WeeklySummary, WorkTime } from "./types";
-import { getInitialState, saveLocalStorage } from "./utils/localStorageUtils";
+import { tableHeaders, weekdays } from "./constants";
+import { initialWorkTimesState, savedWorkTimeState, summaryTableState, workTimeState } from "./stores/atoms";
+import { overtimeStatusSelector, realWorkTimeMinutesSelector, remainingWorkTimeMinutesSelector } from "./stores/selectors";
+import { WeeklySummary } from "./types";
+import { saveLocalStorage } from "./utils/localStorageUtils";
 import { calculateRestTime, calculateTotalWorkTime, minutesToTime, timeToMinutes } from "./utils/timeUtils";
 
 inject();
 
-const tableHeaders = ["요일", "출근 시간", "퇴근 시간", "반차", "연차", "실 근무 시간", "휴게 시간", "전체 근무 시간", "잔여 근무 시간"];
-
-const initialWorkTimesState = Array.from({ length: 5 }, () => ({
-    start: "",
-    end: "",
-    total: "00:00",
-    halfDay: false,
-    fullDay: false,
-}));
-
 const App: React.FC = () => {
-    const [workTime, setWorkTime] = useState<WorkTime[]>(() => getInitialState("workTime", initialWorkTimesState));
-    const [remainingWorkTime, setRemainingWorkTime] = useState("40:00");
-    const [savedWorkTime, setSavedWorkTime] = useState<WeeklySummary[]>(getInitialState("savedWorkTime", []));
-    const [overtime, setOvertime] = useState("00:00");
-    const [summaryTable, setSummaryTable] = useState<SummaryTable[]>([]);
+    const [workTime, setWorkTime] = useRecoilState(workTimeState);
+    const [savedWorkTime, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
+    const [summaryTable, setSummaryTable] = useRecoilState(summaryTableState);
+
+    const realWorkTimeMinutes = useRecoilValue(realWorkTimeMinutesSelector);
+    const remainingWorkTimeMinutes = useRecoilValue(remainingWorkTimeMinutesSelector);
+    const overtime = useRecoilValue(overtimeStatusSelector);
+
     const [capturedImageURL, setCapturedImageURL] = useState("");
     const [showKakaoShareList, setShowKakaoShareList] = useState(false);
 
@@ -37,61 +33,43 @@ const App: React.FC = () => {
         saveLocalStorage("savedWorkTime", savedWorkTime);
     }, [workTime, savedWorkTime]);
 
-    useEffect(() => {
-        let totalRealWorkTimeMinutes = 0;
-
-        workTime.forEach((dayItem, index) => {
-            if (dayItem.total !== "00:00" || dayItem.halfDay || dayItem.fullDay) {
-                totalRealWorkTimeMinutes += timeToMinutes(calculateRealWorkTime(index));
-            }
-        });
-
-        const weeklyWorkTime = "40:00";
-        const remainingWorkTimeMinutes = timeToMinutes(weeklyWorkTime) - totalRealWorkTimeMinutes;
-
-        setOvertime(remainingWorkTimeMinutes < 0 ? minutesToTime(Math.abs(remainingWorkTimeMinutes)) : "00:00");
-        setRemainingWorkTime(minutesToTime(remainingWorkTimeMinutes));
-    }, [workTime]);
+    const isValidWorkTime = (start: string, end: string) => {
+        const startMinutes = timeToMinutes(start);
+        const endMinutes = timeToMinutes(end);
+        return start && end && startMinutes < endMinutes ? minutesToTime(calculateTotalWorkTime(start, end)) : "00:00";
+    };
 
     const handleTimeChange = (dayIndex: number, type: "start" | "end", event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
         const isValidValue = inputValue && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(inputValue);
 
-        const updatedWorkTime = [...workTime];
-
-        updatedWorkTime[dayIndex] = {
-            ...updatedWorkTime[dayIndex],
-            [type]: isValidValue ? inputValue : "",
-        };
-
-        const currentDay = updatedWorkTime[dayIndex];
-
-        if (currentDay.start !== "0:00" && currentDay.end !== "0:00") {
-            currentDay.total = isValidValue ? calculateTotalWorkTime(currentDay.start, currentDay.end) : "00:00";
-        }
+        const updatedWorkTime = workTime.map((dayItem, index) => {
+            if (index === dayIndex) {
+                const updatedDay = {
+                    ...dayItem,
+                    [type]: isValidValue ? inputValue : "",
+                };
+                const updatedTotal = isValidWorkTime(updatedDay.start, updatedDay.end);
+                return { ...updatedDay, total: updatedTotal };
+            }
+            return dayItem;
+        });
 
         setWorkTime(updatedWorkTime);
     };
 
     const handleDayOffChange = (type: "halfDay" | "fullDay", dayIndex: number, event: ChangeEvent<HTMLInputElement>) => {
-        const updatedWorkTime = [...workTime];
-        const currentDay = updatedWorkTime[dayIndex];
-
-        if (type === "halfDay") {
-            updatedWorkTime[dayIndex] = {
-                ...currentDay,
-                halfDay: event.target.checked,
-            };
-        } else if (type === "fullDay") {
-            updatedWorkTime[dayIndex] = {
-                ...currentDay,
-                fullDay: event.target.checked,
-            };
-        }
-
-        if (currentDay.start && currentDay.end) {
-            currentDay.total = calculateTotalWorkTime(currentDay.start, currentDay.end);
-        }
+        const updatedWorkTime = workTime.map((dayItem, index) => {
+            if (index === dayIndex) {
+                const updatedDay = {
+                    ...dayItem,
+                    [type]: event.target.checked,
+                };
+                const updatedTotal = isValidWorkTime(updatedDay.start, updatedDay.end);
+                return { ...updatedDay, total: updatedTotal };
+            }
+            return dayItem;
+        });
 
         setWorkTime(updatedWorkTime);
     };
@@ -103,8 +81,8 @@ const App: React.FC = () => {
     };
 
     const handleSave = () => {
-        const workTimeData = createWeeklySummary();
-        setSavedWorkTime(prevData => [workTimeData, ...prevData]);
+        const summaryData = createWeeklySummary();
+        setSavedWorkTime(prevData => [summaryData, ...prevData]);
     };
 
     const handleDelete = (targetIndex: number) => {
@@ -116,17 +94,17 @@ const App: React.FC = () => {
     };
 
     const handleShareTable = async () => {
-        const workTimeData = createWeeklySummary();
-        const summaryHeadOrder = [...weekdays, "잔여 근무 시간"];
+        const summaryData = createWeeklySummary();
+        const headOrder = [...weekdays, "잔여 근무 시간"];
 
-        const mergedData = summaryHeadOrder.map(title => {
-            const dayData = workTime[weekdays.indexOf(title)] || {};
+        const mergedData = headOrder.map(title => {
+            const workTimeData = workTime[weekdays.indexOf(title)] || {};
             return {
                 title,
-                start: dayData.start || "",
-                end: dayData.end || "",
-                real: title !== "잔여 근무 시간" ? workTimeData[title] : "00:00",
-                remain: title === "잔여 근무 시간" ? workTimeData[title] : "40:00",
+                start: workTimeData.start || "",
+                end: workTimeData.end || "",
+                real: title !== "잔여 근무 시간" ? summaryData[title] : "00:00",
+                remain: title === "잔여 근무 시간" ? summaryData[title] : "40:00",
             };
         });
 
@@ -134,48 +112,28 @@ const App: React.FC = () => {
         setShowKakaoShareList(prevState => !prevState);
     };
 
-    const calculateRealWorkTime = (dayIndex: number) => {
-        const dayData = workTime[dayIndex];
-
-        let totalWorkTimeMinutes = timeToMinutes(dayData.total);
-        const restTimeMinutes = timeToMinutes(calculateRestTime(dayData.start || "0:00", dayData.end || "0:00"));
-
-        if (dayData.halfDay) {
-            totalWorkTimeMinutes += timeToMinutes("04:00");
-        }
-        if (dayData.fullDay) {
-            totalWorkTimeMinutes += timeToMinutes("08:00");
-        }
-
-        const realWorkTimeMinutes = totalWorkTimeMinutes - restTimeMinutes;
-
-        return minutesToTime(realWorkTimeMinutes);
-    };
-
     const createWeeklySummary = () => {
         const weeklySummary: WeeklySummary = {};
 
-        workTime.forEach((dayData, index) => {
-            const realWorkTime = calculateRealWorkTime(index);
+        workTime.forEach((dayItem, index) => {
+            const realWorkTime = minutesToTime(realWorkTimeMinutes[index]);
             const dayStatus = [];
 
-            if (dayData.halfDay) {
+            if (dayItem.halfDay) {
                 dayStatus.push("반차");
             }
-            if (dayData.fullDay) {
+            if (dayItem.fullDay) {
                 dayStatus.push("연차");
             }
 
             const day = weekdays[index];
-            weeklySummary[day] = dayStatus.length ? `${realWorkTime} (${dayStatus.join("/")})` : realWorkTime;
+            weeklySummary[day] = dayStatus.length ? `${realWorkTime} (${dayStatus.join("/")})` : `${realWorkTime}`;
         });
 
-        weeklySummary["잔여 근무 시간"] = overtimeStatus;
+        weeklySummary["잔여 근무 시간"] = overtime;
 
         return weeklySummary;
     };
-
-    const overtimeStatus = timeToMinutes(remainingWorkTime) < 0 ? `-${overtime}` : remainingWorkTime;
 
     return (
         <div className="container">
@@ -236,13 +194,11 @@ const App: React.FC = () => {
                                                 onChange={event => handleDayOffChange("fullDay", i, event)}
                                             />
                                         ) : null}
-                                        {j === 5 ? calculateRealWorkTime(i) : null}
+                                        {j === 5 ? minutesToTime(realWorkTimeMinutes[i]) : null}
                                         {j === 6 ? calculateRestTime(workTime[i].start, workTime[i].end) : null}
                                         {j === 7 ? workTime[i].total : null}
                                         {j === 8 && i === 0 ? (
-                                            <span style={{ color: timeToMinutes(remainingWorkTime) < 0 ? "#EF4444" : "#37516A" }}>
-                                                {overtimeStatus}
-                                            </span>
+                                            <span style={{ color: remainingWorkTimeMinutes < 0 ? "#EF4444" : "#37516A" }}>{overtime}</span>
                                         ) : null}
                                     </td>
                                 ))}
@@ -267,7 +223,7 @@ const App: React.FC = () => {
                     <HtmlToCanvas summaryTable={summaryTable} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
                 </div>
             )}
-            {savedWorkTime.map((savedItem, targetIndex) => (
+            {savedWorkTime.map((savedItem: WeeklySummary, targetIndex: number) => (
                 <div className="data-wrapper">
                     <pre>{JSON.stringify(savedItem, null, 2)}</pre>
                     <button className="outline-button" onClick={() => handleDelete(targetIndex)}>
