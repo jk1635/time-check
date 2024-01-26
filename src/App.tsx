@@ -12,7 +12,7 @@ import { initialWorkTimesState, savedWorkTimeState, summaryTableState, workTimeS
 import { overtimeStatusSelector, realWorkTimeMinutesSelector, remainingWorkTimeMinutesSelector } from "./stores/selectors";
 import { WeeklySummary } from "./types";
 import { saveLocalStorage } from "./utils/localStorageUtils";
-import { calculateRestTime, calculateTotalWorkTime, minutesToTime, timeToMinutes } from "./utils/timeUtils";
+import { calculateRestTime, isValidWorkTime, minutesToTime } from "./utils/timeUtils";
 
 inject();
 
@@ -33,12 +33,6 @@ const App: React.FC = () => {
         saveLocalStorage("savedWorkTime", savedWorkTime);
     }, [workTime, savedWorkTime]);
 
-    const isValidWorkTime = (start: string, end: string) => {
-        const startMinutes = timeToMinutes(start);
-        const endMinutes = timeToMinutes(end);
-        return start && end && startMinutes < endMinutes ? minutesToTime(calculateTotalWorkTime(start, end)) : "00:00";
-    };
-
     const handleTimeChange = (dayIndex: number, type: "start" | "end", event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
         const isValidValue = inputValue && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(inputValue);
@@ -49,7 +43,7 @@ const App: React.FC = () => {
                     ...dayItem,
                     [type]: isValidValue ? inputValue : "",
                 };
-                const updatedTotal = isValidWorkTime(updatedDay.start, updatedDay.end);
+                const updatedTotal = isValidWorkTime({ start: updatedDay.start, end: updatedDay.end });
                 return { ...updatedDay, total: updatedTotal };
             }
             return dayItem;
@@ -65,7 +59,7 @@ const App: React.FC = () => {
                     ...dayItem,
                     [type]: event.target.checked,
                 };
-                const updatedTotal = isValidWorkTime(updatedDay.start, updatedDay.end);
+                const updatedTotal = isValidWorkTime({ start: updatedDay.start, end: updatedDay.end });
                 return { ...updatedDay, total: updatedTotal };
             }
             return dayItem;
@@ -195,7 +189,7 @@ const App: React.FC = () => {
                                             />
                                         ) : null}
                                         {j === 5 ? minutesToTime(realWorkTimeMinutes[i]) : null}
-                                        {j === 6 ? calculateRestTime(workTime[i].start, workTime[i].end) : null}
+                                        {j === 6 ? calculateRestTime({ start: workTime[i].start, end: workTime[i].end }) : null}
                                         {j === 7 ? workTime[i].total : null}
                                         {j === 8 && i === 0 ? (
                                             <span style={{ color: remainingWorkTimeMinutes < 0 ? "#EF4444" : "#37516A" }}>{overtime}</span>

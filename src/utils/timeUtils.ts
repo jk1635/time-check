@@ -1,4 +1,4 @@
-import { WorkTime } from "../types";
+import { WorkTime, WorkTimePeriod } from "../types";
 
 export const timeToMinutes = (time: string) => {
     if (!time) return 0;
@@ -6,21 +6,21 @@ export const timeToMinutes = (time: string) => {
     return hours * 60 + minutes;
 };
 
-export const minutesToTime = (totalMinutes: number) => {
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
+export const minutesToTime = (time: number) => {
+    const hours = Math.floor(time / 60);
+    const minutes = time % 60;
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 };
 
-export const calculateTotalWorkTime = (start: string, end: string) => {
+export const calculateTotalWorkTime = ({ start, end }: WorkTimePeriod) => {
     if (!start || !end) return 0;
     const startMinutes = timeToMinutes(start) + 1;
     const endMinutes = timeToMinutes(end);
     return endMinutes - startMinutes;
 };
 
-export const calculateRestTime = (start: string, end: string) => {
-    const totalMinutes = calculateTotalWorkTime(start, end);
+export const calculateRestTime = ({ start, end }: WorkTimePeriod) => {
+    const totalMinutes = calculateTotalWorkTime({ start, end });
     if (totalMinutes >= 780) {
         return "1:30";
     }
@@ -42,4 +42,10 @@ export const calculateDayOffWorkTime = (dayItem: WorkTime) => {
         totalMinutes += timeToMinutes("08:00");
     }
     return totalMinutes;
+};
+
+export const isValidWorkTime = ({ start, end }: WorkTimePeriod) => {
+    const startMinutes = timeToMinutes(start);
+    const endMinutes = timeToMinutes(end);
+    return start && end && startMinutes < endMinutes ? minutesToTime(calculateTotalWorkTime({ start, end })) : "00:00";
 };

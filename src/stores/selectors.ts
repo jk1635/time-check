@@ -39,7 +39,7 @@ export const realWorkTimeMinutesSelector = selector({
         const workTime = get(workTimeState);
         return workTime.map(dayItem => {
             const totalWorkTimeMinutes = calculateDayOffWorkTime(dayItem);
-            const restTimeMinutes = timeToMinutes(calculateRestTime(dayItem.start || "0:00", dayItem.end || "0:00"));
+            const restTimeMinutes = timeToMinutes(calculateRestTime({ start: dayItem.start || "0:00", end: dayItem.end || "0:00" }));
             return Math.max(0, totalWorkTimeMinutes - restTimeMinutes);
         });
     },

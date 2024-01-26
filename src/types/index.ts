@@ -1,15 +1,16 @@
-interface WorkTime {
+interface WorkTimePeriod {
     start: string;
     end: string;
+}
+
+interface WorkTime extends WorkTimePeriod {
     total: string;
     halfDay: boolean;
     fullDay: boolean;
 }
 
-interface SummaryTable {
+interface SummaryTable extends WorkTimePeriod {
     title: string;
-    start: string;
-    end: string;
     real: string;
     remain: string;
 }
@@ -18,4 +19,4 @@ interface WeeklySummary {
     [key: string]: string;
 }
 
-export type { WorkTime, SummaryTable, WeeklySummary };
+export type { WorkTimePeriod, WorkTime, SummaryTable, WeeklySummary };
