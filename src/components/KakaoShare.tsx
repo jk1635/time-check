@@ -36,15 +36,9 @@ const KakaoShare: React.FC<KakaoShareProps> = ({ title = "스케줄", descriptio
     };
 
     return (
-        <div>
-            {/* <button className="kakao-button" onClick={share}>
-                <img alt="" src="/kakao.png" width="15px" />
-                <span style={{ paddingLeft: "5px" }}>카카오 공유</span>
-            </button> */}
-            <button className="default-button" onClick={share}>
-                2. 카카오 공유
-            </button>
-        </div>
+        <button className="default-button" onClick={share}>
+            2. 카카오 공유
+        </button>
     );
 };
 

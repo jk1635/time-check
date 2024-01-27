@@ -2,7 +2,7 @@ import React from "react";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 
-import TableRow from "./TableRow";
+import TableRows from "./TableRow";
 import { tableHeaders } from "../constants";
 import useTimeHandlers from "../hooks/useTimeHandlers";
 import { workTimeState } from "../stores/atoms";
@@ -26,7 +26,7 @@ const Table = () => {
             </thead>
             <tbody>
                 {Array.from({ length: 5 }, (_row, rowIndex) => (
-                    <TableRow
+                    <TableRows
                         key={rowIndex}
                         rowIndex={rowIndex}
                         workTime={workTime}

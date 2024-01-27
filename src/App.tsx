@@ -4,14 +4,15 @@ import { inject } from "@vercel/analytics";
 import "./App.css";
 import { useRecoilState } from "recoil";
 
+import ActionButtons from "./components/ActionButtons";
 import HtmlToCanvas from "./components/HtmlToCanvas";
 import InfoAndReport from "./components/InfoAndReport";
 import Popup from "./components/Popup";
+import SavedList from "./components/SavedList";
 import Table from "./components/Table";
 import { weekdays } from "./constants";
 import useCreateSummary from "./hooks/useCreateSummary";
-import { initialWorkTimesState, savedWorkTimeState, summaryTableState, workTimeState } from "./stores/atoms";
-import { WeeklySummary } from "./types";
+import { initialWorkTimesState, savedWorkTimeState, showKakaoShareState, summaryTableListState, workTimeState } from "./stores/atoms";
 import { saveLocalStorage } from "./utils/localStorage";
 
 inject();
@@ -19,10 +20,10 @@ inject();
 const App: React.FC = () => {
     const [workTime, setWorkTime] = useRecoilState(workTimeState);
     const [savedWorkTime, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
-    const [summaryTable, setSummaryTable] = useRecoilState(summaryTableState);
+    const [summaryTableList, setSummaryTableList] = useRecoilState(summaryTableListState);
 
     const [capturedImageURL, setCapturedImageURL] = useState("");
-    const [showKakaoShareList, setShowKakaoShareList] = useState(false);
+    const [showKakaoShare, setShowKakaoShare] = useRecoilState(showKakaoShareState);
 
     const workTimeSummary = useCreateSummary();
 
@@ -40,10 +41,6 @@ const App: React.FC = () => {
     const handleSave = () => {
         const summaryData = workTimeSummary();
         setSavedWorkTime(prevData => [summaryData, ...prevData]);
-    };
-
-    const handleDelete = (targetIndex: number) => {
-        setSavedWorkTime(prevData => prevData.filter((_, index) => index !== targetIndex));
     };
 
     const handleCapture = (url: string) => {
@@ -65,8 +62,8 @@ const App: React.FC = () => {
             };
         });
 
-        setSummaryTable(mergedData);
-        setShowKakaoShareList(prevState => !prevState);
+        setSummaryTableList(mergedData);
+        setShowKakaoShare(prevState => !prevState);
     };
 
     return (
@@ -76,30 +73,11 @@ const App: React.FC = () => {
             <div className="table-wrapper">
                 <Table />
             </div>
-            <div className="button-wrapper">
-                <button className="outline-button" onClick={handleShareTable}>
-                    {showKakaoShareList ? "닫기" : "공유"}
-                </button>
-                <button className="outline-button" onClick={handleClearInputs}>
-                    초기화
-                </button>
-                <button className="default-button" onClick={handleSave}>
-                    저장
-                </button>
-            </div>
-            {showKakaoShareList && (
-                <div className="summary-table">
-                    <HtmlToCanvas summaryTable={summaryTable} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
-                </div>
+            <ActionButtons onShareTable={handleShareTable} onClearInputs={handleClearInputs} onSave={handleSave} />
+            {showKakaoShare && (
+                <HtmlToCanvas summaryTableList={summaryTableList} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
             )}
-            {savedWorkTime.map((savedItem: WeeklySummary, targetIndex: number) => (
-                <div className="data-wrapper">
-                    <pre>{JSON.stringify(savedItem, null, 2)}</pre>
-                    <button className="outline-button" onClick={() => handleDelete(targetIndex)}>
-                        삭제
-                    </button>
-                </div>
-            ))}
+            <SavedList />
         </div>
     );
 };

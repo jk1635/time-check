@@ -2,87 +2,52 @@ import React, { useRef, useState } from "react";
 
 import html2canvas from "html2canvas";
 
-import KakaoShare from "./KakaoShare";
 import "./HtmlToCanvas.css";
+import CaptureButton from "./CaptureButton";
+import KakaoShare from "./KakaoShare";
+import KakaoSummaryTable from "./SummaryTable";
+import useCloudUploader from "../hooks/useCloudUploader";
 import { SummaryTable } from "../types";
 
 interface HtmlToCanvasProps {
-    summaryTable: Array<SummaryTable>;
+    summaryTableList: Array<SummaryTable>;
     onCapture: (url: string) => void;
     capturedImageURL?: string;
 }
 
-const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ summaryTable, onCapture, capturedImageURL }) => {
+const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ summaryTableList, onCapture, capturedImageURL }) => {
     const tableRef = useRef(null);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [imageCheck, setImageCheck] = useState(false);
-
-    const uploadCloud = async (blob: Blob): Promise<string> => {
-        const formData = new FormData();
-        formData.append("file", blob);
-        formData.append("upload_preset", `${process.env.REACT_APP_CLOUD_PRESETS}`);
-
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`, {
-            method: "POST",
-            body: formData,
-        });
-
-        const data = await response.json();
-        return data.secure_url;
-    };
+    const { uploadCloud } = useCloudUploader();
 
     const captureTable = async () => {
-        setLoading(true);
+        setIsLoading(true);
 
         if (tableRef.current) {
             const canvas = await html2canvas(tableRef.current);
-            // eslint-disable-next-line no-promise-executor-return
-            const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve));
-
+            const blob = await new Promise<Blob | null>(resolve => {
+                canvas.toBlob(result => {
+                    resolve(result);
+                });
+            });
             if (blob) {
-                const uploadedURL = await uploadCloud(blob);
-                onCapture(uploadedURL);
+                const directUploadedURL = await uploadCloud(blob);
+                onCapture(directUploadedURL);
             }
         }
-
-        setLoading(false);
+        setIsLoading(false);
         setImageCheck(true);
     };
 
-    const renderTableRows = () => {
-        return summaryTable.map(data => {
-            const lastRow = data.title === "잔여 근무 시간";
-            return (
-                <tr key={data.title}>
-                    <td>{data.title}</td>
-                    <td>{lastRow ? "" : data.start || "-"}</td>
-                    <td>{lastRow ? "" : data.end || "-"}</td>
-                    <td>{lastRow ? data.remain : data.real || "-"}</td>
-                </tr>
-            );
-        });
-    };
-
     return (
-        <div className="html-table">
-            {summaryTable.length > 0 && (
-                <table ref={tableRef}>
-                    <thead>
-                        <tr>
-                            <th>요일</th>
-                            <th>출근 시간</th>
-                            <th>퇴근 시간</th>
-                            <th>실 근무 시간</th>
-                        </tr>
-                    </thead>
-                    <tbody>{renderTableRows()}</tbody>
-                </table>
-            )}
-            <div className="capture-button-wrapper">
-                <button className="outline-button" onClick={captureTable}>
-                    {loading ? "생성하는 중" : "1. 이미지 생성"}
-                </button>
-                <KakaoShare imageCheck={imageCheck} imageUrl={capturedImageURL} />
+        <div className="summary-table">
+            <div className="html-table">
+                {summaryTableList.length > 0 && <KakaoSummaryTable ref={tableRef} summaryTableList={summaryTableList} />}
+                <div className="capture-button-wrapper">
+                    <CaptureButton onCapture={captureTable} isLoading={isLoading} />
+                    <KakaoShare imageCheck={imageCheck} imageUrl={capturedImageURL} />
+                </div>
             </div>
         </div>
     );

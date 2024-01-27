@@ -21,7 +21,12 @@ export const savedWorkTimeState = atom<WeeklySummary[]>({
     default: getInitialState("savedWorkTime", []),
 });
 
-export const summaryTableState = atom<SummaryTable[]>({
+export const summaryTableListState = atom<SummaryTable[]>({
     key: "summaryTableState",
     default: [],
+});
+
+export const showKakaoShareState = atom<boolean>({
+    key: "showKakaoShareState",
+    default: false,
 });
