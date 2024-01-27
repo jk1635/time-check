@@ -1,3 +1,6 @@
+type TimeChange = "start" | "end";
+type DayOffChange = "halfDay" | "fullDay";
+
 interface WorkTimePeriod {
     start: string;
     end: string;
@@ -19,4 +22,4 @@ interface WeeklySummary {
     [key: string]: string;
 }
 
-export type { WorkTimePeriod, WorkTime, SummaryTable, WeeklySummary };
+export type { WorkTimePeriod, WorkTime, SummaryTable, WeeklySummary, TimeChange, DayOffChange };

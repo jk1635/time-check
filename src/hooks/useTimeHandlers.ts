@@ -21,15 +21,16 @@ const useTimeHandlers = () => {
         setWorkTime(updatedWorkTime);
     };
 
-    const handleTimeChange = (type: "start" | "end", dayIndex: number, event: ChangeEvent<HTMLInputElement>) => {
-        const inputValue = event.target.value;
+    const handleTimeChange = (type: "start" | "end", dayIndex: number, e: ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
         const isValidValue = inputValue && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(inputValue);
         updateWorkTime(dayIndex, { [type]: isValidValue ? inputValue : "" });
     };
 
-    const handleDayOffChange = (type: "halfDay" | "fullDay", dayIndex: number, event: ChangeEvent<HTMLInputElement>) => {
-        updateWorkTime(dayIndex, { [type]: event.target.checked });
+    const handleDayOffChange = (type: "halfDay" | "fullDay", dayIndex: number, e: ChangeEvent<HTMLInputElement>) => {
+        updateWorkTime(dayIndex, { [type]: e.target.checked });
     };
+
     return { handleTimeChange, handleDayOffChange };
 };
 

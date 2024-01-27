@@ -7,13 +7,13 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import HtmlToCanvas from "./components/HtmlToCanvas";
 import InfoAndReport from "./components/InfoAndReport";
 import Popup from "./components/Popup";
-import { tableHeaders, weekdays } from "./constants";
-import useTimeHandlers from "./hooks/useTimeHandlers";
+import Table from "./components/Table";
+import { weekdays } from "./constants";
 import { initialWorkTimesState, savedWorkTimeState, summaryTableState, workTimeState } from "./stores/atoms";
-import { overtimeStatusSelector, realWorkTimeMinutesSelector, remainingWorkTimeMinutesSelector } from "./stores/selectors";
+import { overtimeStatusSelector, realWorkTimeMinutesSelector } from "./stores/selectors";
 import { WeeklySummary } from "./types";
 import { saveLocalStorage } from "./utils/localStorageUtils";
-import { calculateRestTime, minutesToTime } from "./utils/timeUtils";
+import { minutesToTime } from "./utils/timeUtils";
 
 inject();
 
@@ -23,13 +23,10 @@ const App: React.FC = () => {
     const [summaryTable, setSummaryTable] = useRecoilState(summaryTableState);
 
     const realWorkTimeMinutes = useRecoilValue(realWorkTimeMinutesSelector);
-    const remainingWorkTimeMinutes = useRecoilValue(remainingWorkTimeMinutesSelector);
     const overtime = useRecoilValue(overtimeStatusSelector);
 
     const [capturedImageURL, setCapturedImageURL] = useState("");
     const [showKakaoShareList, setShowKakaoShareList] = useState(false);
-
-    const { handleTimeChange, handleDayOffChange } = useTimeHandlers();
 
     useEffect(() => {
         saveLocalStorage("workTime", workTime);
@@ -102,72 +99,7 @@ const App: React.FC = () => {
             <Popup />
             <InfoAndReport />
             <div className="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            {tableHeaders.map(header => (
-                                <th key={header}>{header}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Array.from({ length: 5 }, (_row, i) => (
-                            <tr key={i}>
-                                {Array.from({ length: 10 }, (_col, j) => (
-                                    <td key={j}>
-                                        {j === 0 ? weekdays[i] : null}
-                                        {j === 1 && (
-                                            <input
-                                                type="text"
-                                                className="text-input"
-                                                placeholder="출근시간"
-                                                defaultValue={workTime[i] ? workTime[i].start : ""}
-                                                onChange={event => handleTimeChange("start", i, event)}
-                                            />
-                                        )}
-                                        {j === 2 && (
-                                            <input
-                                                type="text"
-                                                className="text-input"
-                                                placeholder="퇴근시간"
-                                                defaultValue={workTime[i] ? workTime[i].end : ""}
-                                                onChange={event => handleTimeChange("end", i, event)}
-                                            />
-                                        )}
-                                        {j === 3 ? (
-                                            <input
-                                                type="checkbox"
-                                                className="checkbox-input"
-                                                tabIndex={-1}
-                                                name={`halfDay-${i}`}
-                                                id={`halfDay-${i}`}
-                                                checked={workTime[i].halfDay}
-                                                onChange={event => handleDayOffChange("halfDay", i, event)}
-                                            />
-                                        ) : null}
-                                        {j === 4 ? (
-                                            <input
-                                                type="checkbox"
-                                                className="checkbox-input"
-                                                tabIndex={-1}
-                                                name={`fullDay-${i}`}
-                                                id={`fullDay-${i}`}
-                                                checked={workTime[i].fullDay}
-                                                onChange={event => handleDayOffChange("fullDay", i, event)}
-                                            />
-                                        ) : null}
-                                        {j === 5 ? minutesToTime(realWorkTimeMinutes[i]) : null}
-                                        {j === 6 ? calculateRestTime({ start: workTime[i].start, end: workTime[i].end }) : null}
-                                        {j === 7 ? workTime[i].total : null}
-                                        {j === 8 && i === 0 ? (
-                                            <span style={{ color: remainingWorkTimeMinutes < 0 ? "#EF4444" : "#37516A" }}>{overtime}</span>
-                                        ) : null}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <Table />
             </div>
             <div className="button-wrapper">
                 <button className="outline-button" onClick={handleShareTable}>
