@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 
+import styled from "@emotion/styled";
 import html2canvas from "html2canvas";
 
-import "./HtmlToCanvas.css";
 import CaptureButton from "./CaptureButton";
-import KakaoShare from "./KakaoShare";
+import KakaoShareButton from "./KakaoShare";
 import KakaoSummaryTable from "./SummaryTable";
 import useCloudUploader from "../hooks/useCloudUploader";
 import { SummaryTable } from "../types";
@@ -41,16 +41,37 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ summaryTableList, onCapture
     };
 
     return (
-        <div className="summary-table">
-            <div className="html-table">
+        <CanvasWrapper>
+            <SummaryContainer>
                 {summaryTableList.length > 0 && <KakaoSummaryTable ref={tableRef} summaryTableList={summaryTableList} />}
-                <div className="capture-button-wrapper">
+                <ButtonWrapper>
                     <CaptureButton onCapture={captureTable} isLoading={isLoading} />
-                    <KakaoShare imageCheck={imageCheck} imageUrl={capturedImageURL} />
-                </div>
-            </div>
-        </div>
+                    <KakaoShareButton imageCheck={imageCheck} imageUrl={capturedImageURL} />
+                </ButtonWrapper>
+            </SummaryContainer>
+        </CanvasWrapper>
     );
 };
+
+const CanvasWrapper = styled.section`
+    position: absolute;
+    right: 0;
+    padding-right: 12px;
+`;
+
+const SummaryContainer = styled.div`
+    padding: 12px;
+    border: 1px solid #eaeef4;
+    border-radius: 5px;
+    background-color: #ffffff;
+    z-index: 10;
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    gap: 5px;
+`;
 
 export default HtmlToCanvas;

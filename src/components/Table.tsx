@@ -2,6 +2,7 @@ import React from "react";
 
 import { useRecoilState, useRecoilValue } from "recoil";
 
+import * as S from "./Table.styled";
 import TableRows from "./TableRow";
 import { tableHeaders } from "../constants";
 import useTimeHandlers from "../hooks/useTimeHandlers";
@@ -16,15 +17,15 @@ const Table = () => {
     const overtime = useRecoilValue(overtimeStatusSelector);
 
     return (
-        <table>
-            <thead>
-                <tr>
+        <S.Table>
+            <S.Thead>
+                <S.Tr>
                     {tableHeaders.map(header => (
-                        <th key={header}>{header}</th>
+                        <S.Th key={header}>{header}</S.Th>
                     ))}
-                </tr>
-            </thead>
-            <tbody>
+                </S.Tr>
+            </S.Thead>
+            <S.Tbody>
                 {Array.from({ length: 5 }, (_row, rowIndex) => (
                     <TableRows
                         key={rowIndex}
@@ -37,8 +38,8 @@ const Table = () => {
                         overtime={overtime}
                     />
                 ))}
-            </tbody>
-        </table>
+            </S.Tbody>
+        </S.Table>
     );
 };
 

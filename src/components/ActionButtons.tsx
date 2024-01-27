@@ -1,7 +1,9 @@
 import React from "react";
 
+import styled from "@emotion/styled";
 import { useRecoilState } from "recoil";
 
+import * as S from "./Button.styled";
 import { showKakaoShareState } from "../stores/atoms";
 
 interface ActionButtonsProps {
@@ -13,18 +15,26 @@ interface ActionButtonsProps {
 const ActionButtons: React.FC<ActionButtonsProps> = ({ onShareTable, onClearInputs, onSave }) => {
     const [showKakaoShare, setShowKakaoShare] = useRecoilState(showKakaoShareState);
     return (
-        <div className="button-wrapper">
-            <button className="outline-button" onClick={onShareTable}>
+        <ButtonWrapper>
+            <S.Button className="outline-button" onClick={onShareTable}>
                 {showKakaoShare ? "닫기" : "공유"}
-            </button>
-            <button className="outline-button" onClick={onClearInputs}>
+            </S.Button>
+            <S.Button className="outline-button" onClick={onClearInputs}>
                 초기화
-            </button>
-            <button className="default-button" onClick={onSave}>
+            </S.Button>
+            <S.Button className="default-button" onClick={onSave}>
                 저장
-            </button>
-        </div>
+            </S.Button>
+        </ButtonWrapper>
     );
 };
+
+const ButtonWrapper = styled.section`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    gap: 5px;
+`;
 
 export default ActionButtons;

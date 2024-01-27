@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import styled from "@emotion/styled";
 import { inject } from "@vercel/analytics";
-import "./App.css";
 import { useRecoilState } from "recoil";
 
 import ActionButtons from "./components/ActionButtons";
@@ -67,19 +67,31 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="container">
+        <Container>
             <Popup />
             <InfoAndReport />
-            <div className="table-wrapper">
-                <Table />
-            </div>
-            <ActionButtons onShareTable={handleShareTable} onClearInputs={handleClearInputs} onSave={handleSave} />
-            {showKakaoShare && (
-                <HtmlToCanvas summaryTableList={summaryTableList} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
-            )}
-            <SavedList />
-        </div>
+            <main>
+                <TableWrapper>
+                    <Table />
+                </TableWrapper>
+                <ActionButtons onShareTable={handleShareTable} onClearInputs={handleClearInputs} onSave={handleSave} />
+                {showKakaoShare && (
+                    <HtmlToCanvas summaryTableList={summaryTableList} onCapture={handleCapture} capturedImageURL={capturedImageURL} />
+                )}
+                <SavedList />
+            </main>
+        </Container>
     );
 };
+
+const Container = styled.div`
+    padding: 0 12px;
+`;
+
+const TableWrapper = styled.section`
+    margin-top: 2px;
+    min-width: 300px;
+    overflow-x: scroll;
+`;
 
 export default App;

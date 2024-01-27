@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import "./KakaoShare.css";
+
+import * as S from "./Button.styled";
 
 declare global {
     interface Window {
@@ -17,7 +18,7 @@ interface KakaoShareProps {
     imageCheck: boolean;
 }
 
-const KakaoShare: React.FC<KakaoShareProps> = ({ title = "스케줄", description = "", imageUrl = "", imageCheck }) => {
+const KakaoShareButton: React.FC<KakaoShareProps> = ({ title = "스케줄", description = "", imageUrl = "", imageCheck }) => {
     useEffect(() => {
         if (window.Kakao && !window.Kakao.isInitialized()) {
             window.Kakao.init(appKey);
@@ -36,10 +37,10 @@ const KakaoShare: React.FC<KakaoShareProps> = ({ title = "스케줄", descriptio
     };
 
     return (
-        <button className="default-button" onClick={share}>
+        <S.Button className="default-button" onClick={share}>
             2. 카카오 공유
-        </button>
+        </S.Button>
     );
 };
 
-export default KakaoShare;
+export default KakaoShareButton;

@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from "react";
 
 import Checkbox from "./Checkbox";
+import * as S from "./Table.styled";
 import TextInput from "./TextInput";
 import { weekdays } from "../constants";
 import { DayOffChange, TimeChange, WorkTime } from "../types";
@@ -34,17 +35,17 @@ const TableRow: React.FC<TableRowProps> = ({
     );
 
     return (
-        <tr>
-            <td>{weekdays[rowIndex]}</td>
-            <td>{renderTextInput("start")}</td>
-            <td>{renderTextInput("end")}</td>
-            <td>{renderCheckbox("halfDay")}</td>
-            <td>{renderCheckbox("fullDay")}</td>
-            <td>{minutesToTime(realWorkTimeMinutes[rowIndex])}</td>
-            <td>{calculateRestTime({ start: workTime[rowIndex]?.start, end: workTime[rowIndex]?.end })}</td>
-            <td>{workTime[rowIndex]?.total}</td>
-            <td>{rowIndex === 0 && <span style={{ color: remainingWorkTimeMinutes < 0 ? "#EF4444" : "#37516A" }}>{overtime}</span>}</td>
-        </tr>
+        <S.Tr>
+            <S.Td>{weekdays[rowIndex]}</S.Td>
+            <S.Td>{renderTextInput("start")}</S.Td>
+            <S.Td>{renderTextInput("end")}</S.Td>
+            <S.Td>{renderCheckbox("halfDay")}</S.Td>
+            <S.Td>{renderCheckbox("fullDay")}</S.Td>
+            <S.Td>{minutesToTime(realWorkTimeMinutes[rowIndex])}</S.Td>
+            <S.Td>{calculateRestTime({ start: workTime[rowIndex]?.start, end: workTime[rowIndex]?.end })}</S.Td>
+            <S.Td>{workTime[rowIndex]?.total}</S.Td>
+            <S.Td>{rowIndex === 0 && <span style={{ color: remainingWorkTimeMinutes < 0 ? "#EF4444" : "#37516A" }}>{overtime}</span>}</S.Td>
+        </S.Tr>
     );
 };
 

@@ -1,5 +1,6 @@
 import React from "react";
-import "./InfoAndReport.css";
+
+import styled from "@emotion/styled";
 
 const InfoAndReport = () => {
     const copyEmail = async () => {
@@ -18,15 +19,39 @@ const InfoAndReport = () => {
     };
 
     return (
-        <div className="info">
-            <button className="icon-button" onClick={copyEmail}>
+        <InfoContainer>
+            <IconButton onClick={copyEmail}>
                 <span className="material-symbols-outlined">bug_report</span>
-            </button>
-            <button className="icon-button" onClick={openLink}>
+            </IconButton>
+            <IconButton onClick={openLink}>
                 <span className="material-symbols-outlined">info</span>
-            </button>
-        </div>
+            </IconButton>
+        </InfoContainer>
     );
 };
+
+const InfoContainer = styled.header`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+`;
+
+const IconButton = styled.button`
+    padding: 4px;
+    min-width: 0;
+    height: 30px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    .material-symbols-outlined {
+        color: #0a2c4c;
+        font-size: 20px;
+    }
+
+    &:hover .material-symbols-outlined {
+        color: #eaeef4;
+    }
+`;
 
 export default InfoAndReport;

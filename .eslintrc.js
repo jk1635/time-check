@@ -70,6 +70,7 @@ module.exports = {
                 tsx: "never",
             },
         ],
+        "import/prefer-default-export": "off",
         "import/newline-after-import": "warn",
         "import/no-cycle": "off",
         "import/no-unresolved": "off",
