@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 
 import { SummaryTable, WeeklySummary, WorkTime } from "../types";
-import { getInitialState } from "../utils/localStorageUtils";
+import { getInitialState } from "../utils/localStorage";
 
 export const initialWorkTimesState = Array.from({ length: 5 }, () => ({
     start: "",

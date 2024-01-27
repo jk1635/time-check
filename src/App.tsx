@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 
 import { inject } from "@vercel/analytics";
 import "./App.css";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
 import HtmlToCanvas from "./components/HtmlToCanvas";
 import InfoAndReport from "./components/InfoAndReport";
 import Popup from "./components/Popup";
 import Table from "./components/Table";
 import { weekdays } from "./constants";
+import useCreateSummary from "./hooks/useCreateSummary";
 import { initialWorkTimesState, savedWorkTimeState, summaryTableState, workTimeState } from "./stores/atoms";
-import { overtimeStatusSelector, realWorkTimeMinutesSelector } from "./stores/selectors";
 import { WeeklySummary } from "./types";
-import { saveLocalStorage } from "./utils/localStorageUtils";
-import { minutesToTime } from "./utils/timeUtils";
+import { saveLocalStorage } from "./utils/localStorage";
 
 inject();
 
@@ -22,11 +21,10 @@ const App: React.FC = () => {
     const [savedWorkTime, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
     const [summaryTable, setSummaryTable] = useRecoilState(summaryTableState);
 
-    const realWorkTimeMinutes = useRecoilValue(realWorkTimeMinutesSelector);
-    const overtime = useRecoilValue(overtimeStatusSelector);
-
     const [capturedImageURL, setCapturedImageURL] = useState("");
     const [showKakaoShareList, setShowKakaoShareList] = useState(false);
+
+    const workTimeSummary = useCreateSummary();
 
     useEffect(() => {
         saveLocalStorage("workTime", workTime);
@@ -40,7 +38,7 @@ const App: React.FC = () => {
     };
 
     const handleSave = () => {
-        const summaryData = createWeeklySummary();
+        const summaryData = workTimeSummary();
         setSavedWorkTime(prevData => [summaryData, ...prevData]);
     };
 
@@ -53,7 +51,7 @@ const App: React.FC = () => {
     };
 
     const handleShareTable = async () => {
-        const summaryData = createWeeklySummary();
+        const summaryData = workTimeSummary();
         const headOrder = [...weekdays, "잔여 근무 시간"];
 
         const mergedData = headOrder.map(title => {
@@ -69,29 +67,6 @@ const App: React.FC = () => {
 
         setSummaryTable(mergedData);
         setShowKakaoShareList(prevState => !prevState);
-    };
-
-    const createWeeklySummary = () => {
-        const weeklySummary: WeeklySummary = {};
-
-        workTime.forEach((dayItem, index) => {
-            const realWorkTime = minutesToTime(realWorkTimeMinutes[index]);
-            const dayStatus = [];
-
-            if (dayItem.halfDay) {
-                dayStatus.push("반차");
-            }
-            if (dayItem.fullDay) {
-                dayStatus.push("연차");
-            }
-
-            const day = weekdays[index];
-            weeklySummary[day] = dayStatus.length ? `${realWorkTime} (${dayStatus.join("/")})` : `${realWorkTime}`;
-        });
-
-        weeklySummary["잔여 근무 시간"] = overtime;
-
-        return weeklySummary;
     };
 
     return (

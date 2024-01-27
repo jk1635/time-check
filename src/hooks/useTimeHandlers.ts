@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 
 import { workTimeState } from "../stores/atoms";
 import { WorkTime } from "../types";
-import { isValidWorkTime } from "../utils/timeUtils";
+import { isValidWorkTime } from "../utils/timeCalculator";
 
 const useTimeHandlers = () => {
     const [workTime, setWorkTime] = useRecoilState(workTimeState);

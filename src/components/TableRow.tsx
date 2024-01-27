@@ -4,7 +4,7 @@ import Checkbox from "./Checkbox";
 import TextInput from "./TextInput";
 import { weekdays } from "../constants";
 import { DayOffChange, TimeChange, WorkTime } from "../types";
-import { calculateRestTime, minutesToTime } from "../utils/timeUtils";
+import { calculateRestTime, minutesToTime } from "../utils/timeCalculator";
 
 interface TableRowProps {
     rowIndex: number;

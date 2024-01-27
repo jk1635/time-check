@@ -1,7 +1,7 @@
 import { selector } from "recoil";
 
 import { workTimeState } from "./atoms";
-import { calculateDayOffWorkTime, calculateRestTime, minutesToTime, timeToMinutes } from "../utils/timeUtils";
+import { calculateDayOffWorkTime, calculateRestTime, minutesToTime, timeToMinutes } from "../utils/timeCalculator";
 
 export const realWorkTimeMinutesSelector = selector({
     key: "realWorkTimeSelector",
