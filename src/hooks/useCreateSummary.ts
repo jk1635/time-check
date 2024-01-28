@@ -7,7 +7,8 @@ import { WeeklySummary } from "../types";
 import { minutesToTime } from "../utils/timeCalculator";
 
 const useCreateSummary = () => {
-    const [workTime, setWorkTime] = useRecoilState(workTimeState);
+    const [workTime] = useRecoilState(workTimeState);
+
     const realWorkTimeMinutes = useRecoilValue(realWorkTimeMinutesSelector);
     const overtime = useRecoilValue(overtimeStatusSelector);
 

@@ -10,11 +10,13 @@ import { workTimeState } from "../stores/atoms";
 import { overtimeStatusSelector, realWorkTimeMinutesSelector, remainingWorkTimeMinutesSelector } from "../stores/selectors";
 
 const Table = () => {
-    const [workTime, setWorkTime] = useRecoilState(workTimeState);
-    const { handleTimeChange, handleDayOffChange } = useTimeHandlers();
+    const [workTime] = useRecoilState(workTimeState);
+
     const remainingWorkTimeMinutes = useRecoilValue(remainingWorkTimeMinutesSelector);
     const realWorkTimeMinutes = useRecoilValue(realWorkTimeMinutesSelector);
     const overtime = useRecoilValue(overtimeStatusSelector);
+
+    const { handleTimeChange, handleDayOffChange } = useTimeHandlers();
 
     return (
         <S.Table>

@@ -9,6 +9,7 @@ import { WeeklySummary } from "../types";
 
 const SavedList = () => {
     const [savedWorkTime, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
+
     const handleDelete = (targetIndex: number) => {
         setSavedWorkTime(prevData => prevData.filter((_, index) => index !== targetIndex));
     };
@@ -19,9 +20,7 @@ const SavedList = () => {
                 // eslint-disable-next-line react/no-array-index-key
                 <SavedDataWrapper key={targetIndex}>
                     <pre>{JSON.stringify(savedItem, null, 2)}</pre>
-                    <S.Button className="outline-button" onClick={() => handleDelete(targetIndex)}>
-                        삭제
-                    </S.Button>
+                    <S.OutlineButton onClick={() => handleDelete(targetIndex)}>삭제</S.OutlineButton>
                 </SavedDataWrapper>
             ))}
         </section>

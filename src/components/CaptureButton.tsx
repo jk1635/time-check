@@ -9,9 +9,9 @@ interface CaptureButtonProps {
 
 const CaptureButton: React.FC<CaptureButtonProps> = ({ onCapture, isLoading }) => {
     return (
-        <S.Button className="outline-button" onClick={onCapture}>
+        <S.OutlineButton className="outline-button" onClick={onCapture}>
             {isLoading ? "생성하는 중" : "1. 이미지 생성"}
-        </S.Button>
+        </S.OutlineButton>
     );
 };
 

@@ -2,24 +2,28 @@ import React, { useRef, useState } from "react";
 
 import styled from "@emotion/styled";
 import html2canvas from "html2canvas";
+import { useRecoilState } from "recoil";
 
 import CaptureButton from "./CaptureButton";
 import KakaoShareButton from "./KakaoShare";
 import KakaoSummaryTable from "./SummaryTable";
 import useCloudUploader from "../hooks/useCloudUploader";
-import { SummaryTable } from "../types";
+import { summaryTableListState } from "../stores/atoms";
 
-interface HtmlToCanvasProps {
-    summaryTableList: Array<SummaryTable>;
-    onCapture: (url: string) => void;
-    capturedImageURL?: string;
-}
-
-const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ summaryTableList, onCapture, capturedImageURL }) => {
+const HtmlToCanvas = () => {
     const tableRef = useRef(null);
+
     const [isLoading, setIsLoading] = useState(false);
     const [imageCheck, setImageCheck] = useState(false);
+    const [capturedImageURL, setCapturedImageURL] = useState("");
+
+    const [summaryTableList] = useRecoilState(summaryTableListState);
+
     const { uploadCloud } = useCloudUploader();
+
+    const handleCapture = (url: string) => {
+        setCapturedImageURL(url);
+    };
 
     const captureTable = async () => {
         setIsLoading(true);
@@ -33,7 +37,7 @@ const HtmlToCanvas: React.FC<HtmlToCanvasProps> = ({ summaryTableList, onCapture
             });
             if (blob) {
                 const directUploadedURL = await uploadCloud(blob);
-                onCapture(directUploadedURL);
+                handleCapture(directUploadedURL);
             }
         }
         setIsLoading(false);

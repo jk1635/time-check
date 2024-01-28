@@ -37,9 +37,9 @@ const KakaoShareButton: React.FC<KakaoShareProps> = ({ title = "스케줄", desc
     };
 
     return (
-        <S.Button className="default-button" onClick={share}>
+        <S.DefaultButton className="default-button" onClick={share}>
             2. 카카오 공유
-        </S.Button>
+        </S.DefaultButton>
     );
 };
 
