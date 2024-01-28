@@ -3,9 +3,9 @@ import React, { ChangeEvent } from "react";
 import Checkbox from "./Checkbox";
 import * as S from "./Table.styled";
 import TextInput from "./TextInput";
-import { weekdays } from "../constants";
-import { DayOffChange, TimeChange, WorkTime } from "../types";
-import { calculateRestTime, minutesToTime } from "../utils/timeCalculator";
+import { weekdays } from "../../constants";
+import { DayOffChange, TimeChange, WorkTime } from "../../types";
+import { calculateRestTime, minutesToTime } from "../../utils/timeCalculator";
 
 interface TableRowProps {
     rowIndex: number;

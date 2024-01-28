@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 
-import { TimeChange } from "../types";
+import { TimeChange } from "../../types";
 
 type TextInputProps = {
     type: TimeChange;

@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-import { SummaryTable, WeeklySummary, WorkTime } from "../types";
+import { SummaryTableItem, WeeklySummary, WorkTime } from "../types";
 import { getInitialState } from "../utils/localStorage";
 
 export const initialWorkTimesState = Array.from({ length: 5 }, () => ({
@@ -21,7 +21,7 @@ export const savedWorkTimeState = atom<WeeklySummary[]>({
     default: getInitialState("savedWorkTime", []),
 });
 
-export const summaryTableListState = atom<SummaryTable[]>({
+export const summaryTableListState = atom<SummaryTableItem[]>({
     key: "summaryTableState",
     default: [],
 });

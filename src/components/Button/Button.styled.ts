@@ -1,5 +1,13 @@
 import styled from "@emotion/styled";
 
+const ButtonWrapper = styled.section`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    gap: 5px;
+`;
+
 const BaseButton = styled.button`
     padding: 0 15px;
     min-width: 80px;
@@ -20,4 +28,4 @@ const OutlineButton = styled(BaseButton)`
     background-color: transparent;
 `;
 
-export { DefaultButton, OutlineButton };
+export { DefaultButton, OutlineButton, ButtonWrapper };

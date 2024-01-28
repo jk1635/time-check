@@ -1,13 +1,12 @@
 import React from "react";
 
-import styled from "@emotion/styled";
 import { useRecoilState } from "recoil";
 
 import * as S from "./Button.styled";
-import { weekdays } from "../constants";
-import useCreateSummary from "../hooks/useCreateSummary";
-import { initialWorkTimesState, savedWorkTimeState, showKakaoShareState, summaryTableListState, workTimeState } from "../stores/atoms";
-import { saveLocalStorage } from "../utils/localStorage";
+import { weekdays } from "../../constants";
+import useCreateSummary from "../../hooks/useCreateSummary";
+import { initialWorkTimesState, savedWorkTimeState, showKakaoShareState, summaryTableListState, workTimeState } from "../../stores/atoms";
+import { saveLocalStorage } from "../../utils/localStorage";
 
 const ActionButtons = () => {
     const [workTime, setWorkTime] = useRecoilState(workTimeState);
@@ -48,20 +47,12 @@ const ActionButtons = () => {
     };
 
     return (
-        <ButtonWrapper>
+        <S.ButtonWrapper>
             <S.OutlineButton onClick={handleShareTable}>{showKakaoShare ? "닫기" : "공유"}</S.OutlineButton>
             <S.OutlineButton onClick={handleClearInputs}>초기화</S.OutlineButton>
             <S.DefaultButton onClick={handleSave}>저장</S.DefaultButton>
-        </ButtonWrapper>
+        </S.ButtonWrapper>
     );
 };
-
-const ButtonWrapper = styled.section`
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 24px;
-    margin-bottom: 24px;
-    gap: 5px;
-`;
 
 export default ActionButtons;

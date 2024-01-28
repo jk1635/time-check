@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 
-import { DayOffChange } from "../types";
+import { DayOffChange } from "../../types";
 
 type CheckboxProps = {
     type: DayOffChange;

@@ -12,7 +12,7 @@ interface WorkTime extends WorkTimePeriod {
     fullDay: boolean;
 }
 
-interface SummaryTable extends WorkTimePeriod {
+interface SummaryTableItem extends WorkTimePeriod {
     title: string;
     real: string;
     remain: string;
@@ -22,4 +22,4 @@ interface WeeklySummary {
     [key: string]: string;
 }
 
-export type { WorkTimePeriod, WorkTime, SummaryTable, WeeklySummary, TimeChange, DayOffChange };
+export type { WorkTimePeriod, WorkTime, SummaryTableItem, WeeklySummary, TimeChange, DayOffChange };

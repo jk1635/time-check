@@ -1,5 +1,11 @@
 import styled from "@emotion/styled";
 
+const TableWrapper = styled.section`
+    margin-top: 2px;
+    min-width: 300px;
+    overflow-x: scroll;
+`;
+
 const Table = styled.table`
     width: 100%;
     border-top: 1px solid #eaeef4;
@@ -60,4 +66,4 @@ const Td = styled.td`
     }
 `;
 
-export { Table, Thead, Tr, Th, Tbody, Td };
+export { TableWrapper, Table, Thead, Tr, Th, Tbody, Td };

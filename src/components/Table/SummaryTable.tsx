@@ -1,14 +1,14 @@
 import React, { forwardRef } from "react";
 
 import * as S from "./Table.styled";
-import { SummaryTable } from "../types";
+import { SummaryTableItem } from "../../types";
 
-interface KakaoSummaryTableProps {
-    summaryTableList: Array<SummaryTable>;
+interface SummaryTableProps {
+    summaryTableList: SummaryTableItem[];
 }
 
-const KakaoSummaryTable = forwardRef<HTMLTableElement, KakaoSummaryTableProps>(({ summaryTableList }, ref) => {
-    const renderTableRow = () => {
+const SummaryTable = forwardRef<HTMLTableElement, SummaryTableProps>(({ summaryTableList }, ref) => {
+    const renderSummaryTableRow = () => {
         return summaryTableList.map(data => {
             const lastRow = data.title === "잔여 근무 시간";
             return (
@@ -32,9 +32,9 @@ const KakaoSummaryTable = forwardRef<HTMLTableElement, KakaoSummaryTableProps>((
                     <S.Th>실 근무 시간</S.Th>
                 </S.Tr>
             </S.Thead>
-            <S.Tbody>{renderTableRow()}</S.Tbody>
+            <S.Tbody>{renderSummaryTableRow()}</S.Tbody>
         </S.Table>
     );
 });
 
-export default KakaoSummaryTable;
+export default SummaryTable;
