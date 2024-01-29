@@ -37,7 +37,7 @@ const KakaoButton = styled(BaseButton)`
     color: #000000;
     background-color: #fee500;
 
-    img {
+    & > img {
         width: 15px;
         padding-right: 5px;
     }
