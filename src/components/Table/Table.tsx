@@ -42,7 +42,7 @@ const Table = () => {
                         />
                     ))}
                 </S.Tbody>
-            </S.Table>{" "}
+            </S.Table>
         </S.TableWrapper>
     );
 };
