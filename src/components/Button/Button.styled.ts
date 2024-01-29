@@ -28,4 +28,19 @@ const OutlineButton = styled(BaseButton)`
     background-color: transparent;
 `;
 
-export { DefaultButton, OutlineButton, ButtonWrapper };
+const KakaoButton = styled(BaseButton)`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 135px;
+    border: none;
+    color: #000000;
+    background-color: #fee500;
+
+    img {
+        width: 15px;
+        padding-right: 5px;
+    }
+`;
+
+export { DefaultButton, OutlineButton, ButtonWrapper, KakaoButton };
