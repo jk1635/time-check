@@ -20,7 +20,6 @@ const HtmlToCanvas = () => {
     const tableRef = useRef(null);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [, setImageCheck] = useState(false);
     const [summaryTableList] = useRecoilState(summaryTableListState);
     const { uploadCloud } = useCloudUploader();
 

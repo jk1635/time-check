@@ -7,6 +7,7 @@ const InfoContainer = styled.header`
 `;
 
 const IconButton = styled.button`
+    position: relative;
     padding: 4px;
     min-width: 0;
     height: 30px;
