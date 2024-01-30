@@ -58,6 +58,7 @@ module.exports = {
         // 타입스크립트 규칙
         "@typescript-eslint/no-use-before-define": ["off", { extensions: [".js", ".jsx", ".ts", ".tsx"] }],
         "@typescript-eslint/no-unused-vars": "warn",
+
         // 임포트 규칙
         "import/no-extraneous-dependencies": "off",
         "import/extensions": [
