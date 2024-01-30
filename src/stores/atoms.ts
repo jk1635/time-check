@@ -30,3 +30,8 @@ export const showKakaoShareState = atom<boolean>({
     key: "showKakaoShareState",
     default: false,
 });
+
+export const showPopupState = atom({
+    key: "showPopupState",
+    default: false,
+});
