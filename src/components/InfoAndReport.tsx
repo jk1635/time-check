@@ -1,14 +1,7 @@
 import React from "react";
+import "./InfoAndReport.css";
 
-import { useRecoilState } from "recoil";
-
-import * as S from "./Header.styled";
-import { showPopupState } from "../../stores/atoms";
-import { Circle } from "../Circle";
-
-const Header = () => {
-    const [showPopup] = useRecoilState(showPopupState);
-
+const InfoAndReport = () => {
     const copyEmail = async () => {
         const email = "jkwak1635@gmail.com";
 
@@ -25,16 +18,15 @@ const Header = () => {
     };
 
     return (
-        <S.InfoContainer>
-            <S.IconButton onClick={copyEmail}>
-                {showPopup && <Circle />}
+        <div className="info">
+            <button className="icon-button" onClick={copyEmail}>
                 <span className="material-symbols-outlined">bug_report</span>
-            </S.IconButton>
-            <S.IconButton onClick={openLink}>
+            </button>
+            <button className="icon-button" onClick={openLink}>
                 <span className="material-symbols-outlined">info</span>
-            </S.IconButton>
-        </S.InfoContainer>
+            </button>
+        </div>
     );
 };
 
-export default Header;
+export default InfoAndReport;

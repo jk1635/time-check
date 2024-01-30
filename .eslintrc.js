@@ -23,10 +23,11 @@ module.exports = {
         sourceType: "module",
         createDefaultProgram: true,
     },
-    ignorePatterns: [".eslintrc.js"],
     plugins: ["prettier", "react", "@typescript-eslint", "react-hooks"],
     settings: {
-        "import/resolver": { node: { extensions: [".js", ".jsx", ".ts", ".tsx"] } },
+        "import/resolver": {
+            node: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
+        },
         "import/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] },
     },
     rules: {
@@ -36,12 +37,10 @@ module.exports = {
         // 리액트 규칙
         "react/button-has-type": "off",
         "react/function-component-definition": ["error", { namedComponents: "arrow-function" }],
-        "react/jsx-props-no-spreading": "off",
         "react/require-default-props": "off",
 
         // 리액트 훅스 규칙
-        "react-hooks/exhaustive-deps": ["warn", { additionalHooks: "useRecoilCallback" }],
-        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": ["warn"], // hook 에서 의존성 배열 허용 여부
 
         // jsx 규칙 (웹 접근성)
         "jsx-a11y/click-events-have-key-events": "off",
@@ -56,8 +55,12 @@ module.exports = {
         ],
 
         // 타입스크립트 규칙
-        "@typescript-eslint/no-use-before-define": ["off", { extensions: [".js", ".jsx", ".ts", ".tsx"] }],
-        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-use-before-define": [
+            "off",
+            {
+                extensions: [".js", ".jsx", ".ts", ".tsx"],
+            },
+        ],
 
         // 임포트 규칙
         "import/no-extraneous-dependencies": "off",
@@ -71,7 +74,6 @@ module.exports = {
                 tsx: "never",
             },
         ],
-        "import/prefer-default-export": "off",
         "import/newline-after-import": "warn",
         "import/no-cycle": "off",
         "import/no-unresolved": "off",

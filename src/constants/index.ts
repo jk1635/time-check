@@ -1,13 +1,6 @@
-export const weekdays = ["월", "화", "수", "목", "금"];
+export const days = ["월", "화", "수", "목", "금"];
 
-export const tableHeaders = [
-    "요일",
-    "출근 시간",
-    "퇴근 시간",
-    "반차",
-    "연차",
-    "실 근무 시간",
-    "휴게 시간",
-    "전체 근무 시간",
-    "잔여 근무 시간",
-];
+export const initialWorkTimes = Array.from({ length: 5 }, () => ({ start: "", end: "" }));
+export const initialTotalWorkTimes = Array.from({ length: 5 }, () => "00:00");
+export const initialHalfDays = Array.from({ length: 5 }, () => false);
+export const initialFullDays = Array.from({ length: 5 }, () => false);

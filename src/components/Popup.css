@@ -1,0 +1,52 @@
+.popup-wrapper {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    width: 300px;
+    height: 200px;
+    border: 1px solid #EAEEF4;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(234, 238, 244, 0.4);
+    z-index: 999;
+}
+
+.popup-wrapper button {
+    margin: 10px;
+}
+
+.close-comment {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* .close-checkbox {
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+}
+
+.close-label {
+    font-size: 11px;
+}
+
+.input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */

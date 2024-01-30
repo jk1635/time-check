@@ -1,0 +1,22 @@
+.info {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.info .icon-button {
+    padding: 4px;
+    min-width: 0px;
+    height: 30px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.info .icon-button .material-symbols-outlined {
+    color:#0A2C4C;
+    font-size: 20px;
+}
+
+.info .icon-button:hover .material-symbols-outlined {
+    color:#EAEEF4;
+}

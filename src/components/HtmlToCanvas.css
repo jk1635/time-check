@@ -1,0 +1,14 @@
+.html-table {
+    padding: 12px;
+    border: 1px solid #EAEEF4;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    z-index: 10;
+}
+
+.capture-button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    gap: 5px;
+}
