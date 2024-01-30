@@ -22,4 +22,9 @@ interface WeeklySummary {
     [key: string]: string;
 }
 
-export type { WorkTimePeriod, WorkTime, SummaryTableItem, WeeklySummary, TimeChange, DayOffChange };
+interface OldWorkTime {
+    start: string;
+    end: string;
+}
+
+export type { WorkTimePeriod, WorkTime, SummaryTableItem, WeeklySummary, TimeChange, DayOffChange, OldWorkTime };
