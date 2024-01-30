@@ -59,7 +59,7 @@ const CloseCheckbox = styled.input`
 
 const CloseLabel = styled.label`
     font-size: 11px;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
 `;
 
 export { ModalOverlay, PopupWrapper, FlexBox, CloseComment, CheckboxWrapper, CloseCheckbox, CloseLabel };
