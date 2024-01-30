@@ -11,7 +11,7 @@ import { HtmlToCanvas } from "./components/HtmlToCanvas";
 import { Popup } from "./components/Popup";
 import { Table } from "./components/Table";
 import { TimeLogs } from "./components/TimeLogs";
-import { savedWorkTimeState, showKakaoShareState, workTimeState } from "./stores/atoms";
+import { savedWorkTimeState, showKakaoShareState, showPopupState, workTimeState } from "./stores/atoms";
 import { OldWorkTime } from "./types";
 import { saveLocalStorage } from "./utils/localStorage";
 
@@ -21,6 +21,7 @@ const App: React.FC = () => {
     const [workTime, setWorkTime] = useRecoilState(workTimeState);
     const [savedWorkTime, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
     const [showKakaoShare] = useRecoilState(showKakaoShareState);
+    const [, setShowPopup] = useRecoilState(showPopupState);
 
     const hasMigrated = JSON.parse(localStorage.getItem("hasMigrated") || "false");
 
@@ -63,6 +64,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         if (!hasMigrated) {
+            setShowPopup(true);
             migrateData();
         } else {
             saveLocalStorage("workTime", workTime);
