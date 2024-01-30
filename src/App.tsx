@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import styled from "@emotion/styled";
 import { inject } from "@vercel/analytics";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { useRecoilState } from "recoil";
 
 import { ActionButtons } from "./components/Button";
@@ -79,6 +80,7 @@ const App: React.FC = () => {
                 {showKakaoShare && <HtmlToCanvas />}
                 <TimeLogs />
             </main>
+            <SpeedInsights />
         </Container>
     );
 };
