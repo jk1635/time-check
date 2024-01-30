@@ -1,13 +1,30 @@
-interface WorkTime {
+type TimeChange = "start" | "end";
+type DayOffChange = "halfDay" | "fullDay";
+
+interface WorkTimePeriod {
     start: string;
     end: string;
 }
 
-interface SummaryData {
-    day: string;
-    start?: string;
-    end?: string;
+interface WorkTime extends WorkTimePeriod {
     total: string;
+    halfDay: boolean;
+    fullDay: boolean;
 }
 
-export type { WorkTime, SummaryData };
+interface SummaryTableItem extends WorkTimePeriod {
+    title: string;
+    real: string;
+    remain: string;
+}
+
+interface WeeklySummary {
+    [key: string]: string;
+}
+
+interface OldWorkTime {
+    start: string;
+    end: string;
+}
+
+export type { WorkTimePeriod, WorkTime, SummaryTableItem, WeeklySummary, TimeChange, DayOffChange, OldWorkTime };
