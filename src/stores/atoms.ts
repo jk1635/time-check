@@ -40,3 +40,8 @@ export const langState = atom({
     key: "langState",
     default: "ko",
 });
+
+export const dropdownState = atom<boolean>({
+    key: "dropdownState",
+    default: false,
+});

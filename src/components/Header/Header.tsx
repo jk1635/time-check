@@ -4,6 +4,7 @@ import { track } from "@vercel/analytics";
 import { reportValue } from "@vercel/flags";
 import { useRecoilState } from "recoil";
 
+import Dropdown from "./Dropdown";
 import * as S from "./Header.styled";
 import i18next from "../../lang/i18n";
 import { langState, showPopupState } from "../../stores/atoms";
@@ -43,15 +44,18 @@ const Header = () => {
 
     return (
         <S.InfoContainer>
+            {/* <S.IconButton> */}
+            {/*    <Dropdown /> */}
+            {/* </S.IconButton> */}
             <S.IconButton onClick={toggleLanguage}>
-                <span>{language.toUpperCase()}</span>
+                <span className="material-symbols-outlined icon">language</span>
             </S.IconButton>
             <S.IconButton onClick={copyEmail}>
                 {showPopup && <Circle />}
-                <span className="material-symbols-outlined">bug_report</span>
+                <span className="material-symbols-outlined icon">bug_report</span>
             </S.IconButton>
             <S.IconButton onClick={openLink}>
-                <span className="material-symbols-outlined">info</span>
+                <span className="material-symbols-outlined icon">info</span>
             </S.IconButton>
         </S.InfoContainer>
     );
