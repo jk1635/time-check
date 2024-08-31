@@ -1,5 +1,7 @@
 import React, { forwardRef } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import * as S from "./Table.styled";
 import { SummaryTableItem } from "../../types";
 
@@ -8,12 +10,15 @@ interface SummaryTableProps {
 }
 
 const SummaryTable = forwardRef<HTMLTableElement, SummaryTableProps>(({ summaryTableList }, ref) => {
+    const { t } = useTranslation();
+
     const renderSummaryTableRow = () => {
-        return summaryTableList.map(data => {
-            const lastRow = data.title === "잔여 근무 시간";
+        return summaryTableList.map((data, summaryIndex) => {
+            const lastRow = summaryIndex === summaryTableList.length - 1;
+
             return (
                 <S.Tr key={data.title}>
-                    <S.Td>{data.title}</S.Td>
+                    <S.Td>{t(data.title)}</S.Td>
                     <S.Td>{lastRow ? "" : data.start || "-"}</S.Td>
                     <S.Td>{lastRow ? "" : data.end || "-"}</S.Td>
                     <S.Td>{lastRow ? data.remain : data.real || "-"}</S.Td>
@@ -26,10 +31,10 @@ const SummaryTable = forwardRef<HTMLTableElement, SummaryTableProps>(({ summaryT
         <S.Table ref={ref}>
             <S.Thead>
                 <S.Tr>
-                    <S.Th>요일</S.Th>
-                    <S.Th>출근 시간</S.Th>
-                    <S.Th>퇴근 시간</S.Th>
-                    <S.Th>실 근무 시간</S.Th>
+                    <S.Th>{t("요일")}</S.Th>
+                    <S.Th>{t("출근 시간")}</S.Th>
+                    <S.Th>{t("퇴근 시간")}</S.Th>
+                    <S.Th>{t("실 근무 시간")}</S.Th>
                 </S.Tr>
             </S.Thead>
             <S.Tbody>{renderSummaryTableRow()}</S.Tbody>

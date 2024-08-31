@@ -4,19 +4,13 @@ import { TimeChange } from "../../types";
 
 type TextInputProps = {
     type: TimeChange;
-    defaultValue: string;
+    value: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
-const TextInput: React.FC<TextInputProps> = ({ type, defaultValue, onChange }) => {
+const TextInput = ({ type, value, onChange }: TextInputProps) => {
     return (
-        <input
-            type="text"
-            className="text-input"
-            placeholder={type === "start" ? "출근시간" : "퇴근시간"}
-            defaultValue={defaultValue}
-            onChange={onChange}
-        />
+        <input type="text" className="text-input" placeholder={type === "start" ? "09:00" : "18:00"} value={value} onChange={onChange} />
     );
 };
 

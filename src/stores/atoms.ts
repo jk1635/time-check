@@ -35,3 +35,8 @@ export const showPopupState = atom({
     key: "showPopupState",
     default: false,
 });
+
+export const langState = atom({
+    key: "langState",
+    default: "ko",
+});

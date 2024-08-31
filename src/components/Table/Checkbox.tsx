@@ -8,7 +8,7 @@ type CheckboxProps = {
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Checkbox: React.FC<CheckboxProps> = ({ type, checked, onChange }) => {
+const Checkbox = ({ type, checked, onChange }: CheckboxProps) => {
     return <input type="checkbox" className="checkbox-input" tabIndex={-1} name={type} checked={checked} onChange={onChange} />;
 };
 

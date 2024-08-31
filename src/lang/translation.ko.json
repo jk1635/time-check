@@ -1,0 +1,23 @@
+{
+  "Day": "요일",
+  "Start Time": "출근 시간",
+  "End Time": "퇴근 시간",
+  "Half": "반차",
+  "Full": "연차",
+  "Actual": "실 근무 시간",
+  "Break": "휴게 시간",
+  "Total": "전체 근무 시간",
+  "Remaining": "잔여 근무 시간",
+  "Mon": "월",
+  "Tue": "화",
+  "Wed": "수",
+  "Thu": "목",
+  "Fri": "금",
+  "Share": "공유",
+  "Reset": "초기화",
+  "Save": "저장",
+  "Close": "닫기",
+  "Delete": "삭제",
+  "Generating image..": "이미지 생성 중..",
+  "Share on Kakao": "카카오 공유하기"
+}

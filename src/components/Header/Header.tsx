@@ -1,13 +1,30 @@
 import React from "react";
 
+import { track } from "@vercel/analytics";
+import { reportValue } from "@vercel/flags";
 import { useRecoilState } from "recoil";
 
 import * as S from "./Header.styled";
-import { showPopupState } from "../../stores/atoms";
+import i18next from "../../lang/i18n";
+import { langState, showPopupState } from "../../stores/atoms";
+import { saveLocalStorage } from "../../utils/localStorage";
 import { Circle } from "../Circle";
 
 const Header = () => {
+    const [language, setLanguage] = useRecoilState(langState);
     const [showPopup] = useRecoilState(showPopupState);
+
+    const toggleLanguage = () => {
+        const newLang = language === "ko" ? "en" : "ko";
+        i18next.changeLanguage(newLang);
+        setLanguage(newLang);
+        saveLocalStorage("language", newLang);
+        reportValue("language", newLang);
+        track("language", {
+            category: "language",
+            action: `change language to ${newLang}`,
+        });
+    };
 
     const copyEmail = async () => {
         const email = "jkwak1635@gmail.com";
@@ -26,6 +43,9 @@ const Header = () => {
 
     return (
         <S.InfoContainer>
+            <S.IconButton onClick={toggleLanguage}>
+                <span>{language.toUpperCase()}</span>
+            </S.IconButton>
             <S.IconButton onClick={copyEmail}>
                 {showPopup && <Circle />}
                 <span className="material-symbols-outlined">bug_report</span>

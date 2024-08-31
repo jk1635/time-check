@@ -23,6 +23,10 @@ const IconButton = styled.button`
     &:hover .material-symbols-outlined {
         color: #eaeef4;
     }
+
+    &:hover {
+        color: #eaeef4;
+    }
 `;
 
 export { InfoContainer, IconButton };
