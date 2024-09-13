@@ -8,9 +8,11 @@ const InfoContainer = styled.header`
 
 const IconButton = styled.button`
     position: relative;
-    padding: 4px;
+    justify-content: center;
+    display: flex;
     min-width: 0;
     height: 30px;
+    padding: 4px;
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -20,7 +22,7 @@ const IconButton = styled.button`
         font-size: 20px;
     }
 
-    &:hover .material-symbols-outlined {
+    &:hover .icon {
         color: #eaeef4;
     }
 `;

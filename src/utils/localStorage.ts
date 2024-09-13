@@ -5,6 +5,6 @@ export const getInitialState: <T>(key: string, initialValue: T) => T = (key, ini
     return storedValue ? JSON.parse(storedValue) : initialValue;
 };
 
-export const saveLocalStorage = (key: string, data: WorkTime[] | WeeklySummary[]) => {
+export const saveLocalStorage = (key: string, data: WorkTime[] | WeeklySummary[] | string) => {
     localStorage.setItem(key, JSON.stringify(data));
 };

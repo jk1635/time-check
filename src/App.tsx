@@ -11,7 +11,8 @@ import { HtmlToCanvas } from "./components/HtmlToCanvas";
 import { Popup } from "./components/Popup";
 import { Table } from "./components/Table";
 import { TimeLogs } from "./components/TimeLogs";
-import { savedWorkTimeState, showKakaoShareState, showPopupState, workTimeState } from "./stores/atoms";
+import i18next from "./lang/i18n";
+import { langState, savedWorkTimeState, showKakaoShareState, showPopupState, workTimeState } from "./stores/atoms";
 import { OldWorkTime } from "./types";
 import { saveLocalStorage } from "./utils/localStorage";
 
@@ -21,6 +22,7 @@ const App: React.FC = () => {
     const [workTime, setWorkTime] = useRecoilState(workTimeState);
     const [savedWorkTime, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
     const [showKakaoShare] = useRecoilState(showKakaoShareState);
+    const [language, setLanguage] = useRecoilState(langState);
     const [, setShowPopup] = useRecoilState(showPopupState);
 
     const hasMigrated = JSON.parse(localStorage.getItem("hasMigrated") || "false");
@@ -61,6 +63,16 @@ const App: React.FC = () => {
         localStorage.removeItem("savedData");
         localStorage.setItem("hasMigrated", "true");
     };
+
+    useEffect(() => {
+        if (!localStorage.getItem("language")) {
+            saveLocalStorage("language", "ko");
+        } else {
+            const savedLang = JSON.parse(localStorage.getItem("language") || "ko");
+            setLanguage(savedLang);
+            i18next.changeLanguage(savedLang);
+        }
+    }, [language]);
 
     useEffect(() => {
         if (!hasMigrated) {

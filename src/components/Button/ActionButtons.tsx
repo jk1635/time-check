@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 
 import * as S from "./Button.styled";
@@ -9,6 +10,8 @@ import { initialWorkTimesState, savedWorkTimeState, showKakaoShareState, summary
 import { saveLocalStorage } from "../../utils/localStorage";
 
 const ActionButtons = () => {
+    const { t } = useTranslation();
+
     const [workTime, setWorkTime] = useRecoilState(workTimeState);
     const [, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
     const [, setSummaryTableList] = useRecoilState(summaryTableListState);
@@ -17,17 +20,18 @@ const ActionButtons = () => {
     const workTimeSummary = useCreateSummary();
 
     const handleShareTable = async () => {
-        const summaryData = workTimeSummary();
         const headOrder = [...weekdays, "잔여 근무 시간"];
 
-        const mergedData = headOrder.map(title => {
+        const mergedData = headOrder.map((title, index) => {
             const workTimeData = workTime[weekdays.indexOf(title)] || {};
+            const extraValue = index === headOrder.length - 1;
+
             return {
                 title,
                 start: workTimeData.start || "",
                 end: workTimeData.end || "",
-                real: title !== "잔여 근무 시간" ? summaryData[title] : "00:00",
-                remain: title === "잔여 근무 시간" ? summaryData[title] : "40:00",
+                real: !extraValue ? workTimeSummary[t(title)] : "00:00",
+                remain: extraValue ? workTimeSummary[t(title)] : "40:00",
             };
         });
 
@@ -38,19 +42,17 @@ const ActionButtons = () => {
     const handleClearInputs = () => {
         setWorkTime(initialWorkTimesState);
         saveLocalStorage("workTime", initialWorkTimesState);
-        window.location.reload();
     };
 
     const handleSave = () => {
-        const summaryData = workTimeSummary();
-        setSavedWorkTime(prevData => [summaryData, ...prevData]);
+        setSavedWorkTime(prevData => [workTimeSummary, ...prevData]);
     };
 
     return (
         <S.ButtonWrapper>
-            <S.OutlineButton onClick={handleShareTable}>{showKakaoShare ? "닫기" : "공유"}</S.OutlineButton>
-            <S.OutlineButton onClick={handleClearInputs}>초기화</S.OutlineButton>
-            <S.DefaultButton onClick={handleSave}>저장</S.DefaultButton>
+            <S.OutlineButton onClick={handleShareTable}>{t(showKakaoShare ? "닫기" : "공유")}</S.OutlineButton>
+            <S.OutlineButton onClick={handleClearInputs}>{t("초기화")}</S.OutlineButton>
+            <S.DefaultButton onClick={handleSave}>{t("저장")}</S.DefaultButton>
         </S.ButtonWrapper>
     );
 };

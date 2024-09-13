@@ -23,8 +23,14 @@ const useTimeHandlers = () => {
 
     const handleTimeChange = (type: "start" | "end", dayIndex: number, e: ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
-        const isValidValue = inputValue && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(inputValue);
-        updateWorkTime(dayIndex, { [type]: isValidValue ? inputValue : "" });
+        updateWorkTime(dayIndex, { [type]: inputValue });
+
+        if (inputValue.length === 5) {
+            const isValidValue = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(inputValue);
+            if (!isValidValue) {
+                updateWorkTime(dayIndex, { [type]: "" });
+            }
+        }
     };
 
     const handleDayOffChange = (type: "halfDay" | "fullDay", dayIndex: number, e: ChangeEvent<HTMLInputElement>) => {

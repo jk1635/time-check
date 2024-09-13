@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 
 import * as S from "./TimeLogs.styled";
@@ -8,6 +9,8 @@ import { WeeklySummary } from "../../types";
 import * as BS from "../Button/Button.styled";
 
 const TimeLogs = () => {
+    const { t } = useTranslation();
+
     const [savedWorkTime, setSavedWorkTime] = useRecoilState(savedWorkTimeState);
 
     const handleDelete = (targetIndex: number) => {
@@ -20,7 +23,7 @@ const TimeLogs = () => {
                 // eslint-disable-next-line react/no-array-index-key
                 <S.TimeLogsWrapper key={targetIndex}>
                     <pre>{JSON.stringify(savedItem, null, 2)}</pre>
-                    <BS.OutlineButton onClick={() => handleDelete(targetIndex)}>삭제</BS.OutlineButton>
+                    <BS.OutlineButton onClick={() => handleDelete(targetIndex)}>{t("삭제")}</BS.OutlineButton>
                 </S.TimeLogsWrapper>
             ))}
         </section>

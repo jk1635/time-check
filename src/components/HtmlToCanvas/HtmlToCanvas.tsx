@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import html2canvas from "html2canvas";
+import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 
 import * as S from "./HtmlToCanvas.styled";
@@ -17,10 +18,13 @@ declare global {
 }
 
 const HtmlToCanvas = () => {
+    const { t } = useTranslation();
+
     const tableRef = useRef(null);
 
     const [isLoading, setIsLoading] = useState(false);
     const [summaryTableList] = useRecoilState(summaryTableListState);
+
     const { uploadCloud } = useCloudUploader();
 
     const appKey = process.env.REACT_APP_KAKAO_SHARE_KEY;
@@ -79,7 +83,7 @@ const HtmlToCanvas = () => {
                 <S.ButtonWrapper>
                     <BS.KakaoButton onClick={captureAndShare}>
                         <img alt="" src="/kakao.png" />
-                        {isLoading ? "이미지 생성 중.." : "카카오 공유하기"}
+                        {isLoading ? t("이미지 생성 중..") : t("카카오 공유하기")}
                     </BS.KakaoButton>
                 </S.ButtonWrapper>
             </S.SummaryContainer>
